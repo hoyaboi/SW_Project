@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">SW_Project</string>
+
+    <!-- Sign In -->
+    <string name="email">아이디</string>
+    <string name="password">비밀번호</string>
+    <string name="signup">회원가입</string>
+    <string name="signin">로그인</string>
+    <string name="sign_in_google">구글로 로그인</string>
+
+</resources>
