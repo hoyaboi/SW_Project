@@ -19,15 +19,17 @@ import com.google.firebase.auth.GoogleAuthProvider
 
 
 class LoginActivity : AppCompatActivity() {
+
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         auth = FirebaseAuth.getInstance()
 
         val signInButton: Button = findViewById(R.id.signin_button)
-        val signUpButton: Button = findViewById(R.id.signup_button)
+        val signUpButton: Button = findViewById(R.id.signup_page_button)
         val signUpGoogleButton : Button = findViewById(R.id.signin_google)
 
         signInButton.setOnClickListener {
@@ -48,6 +50,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     // google 로그인
+    // 이 부분에서 google 계정 생성이 됩니다.
+    // 1. 데이터베이스에 로그인한 이메일과 매핑되는 (이메일, 이름, 생년월일)이 아직 등록 안 되어 있으면 SignupGoogleActivity로 이동
+    // 2. 등록된 사용자면 StartActivity로 이동하게 코드 수정해주시면 됩니다.
     private fun googleLogin() {
         val signInIntent = googleSignInClient.signInIntent
         googleLoginLauncher.launch(signInIntent)
@@ -76,7 +81,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // 이메일 로그인 및 회원가입
+    // 이메일 로그인
     private fun signIn() {
         val idEditText: TextInputEditText = findViewById(R.id.id_edittext)
         val passwordEditText: TextInputEditText = findViewById(R.id.pwd_edittext)
@@ -93,22 +98,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
-    private fun signUp() {
-        val idEditText: TextInputEditText = findViewById(R.id.id_edittext)
-        val passwordEditText: TextInputEditText = findViewById(R.id.pwd_edittext)
-        val id = idEditText.text.toString().trim()
-        val pwd = passwordEditText.text.toString().trim()
 
-        if(id.isNotEmpty() && pwd.isNotEmpty()) {
-            auth.createUserWithEmailAndPassword(id, pwd).addOnCompleteListener(this) { task ->
-                if(task.isSuccessful) {
-                    startActivity(Intent(this, LoginActivity::class.java))
-                } else {
-                    Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-    }
     private fun moveStartPage(user:FirebaseUser?) {
         if(user != null) {
             startActivity(Intent(this, StartActivity::class.java))
