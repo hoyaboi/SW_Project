@@ -24,51 +24,51 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/id_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
             android:layout_marginRight="20dp"
-            android:hint="@string/email">
-        </com.google.android.material.textfield.TextInputEditText>
+            android:hint="@string/email"></com.google.android.material.textfield.TextInputEditText>
+
         <com.google.android.material.textfield.TextInputEditText
-            android:inputType="textPassword"
             android:id="@+id/pwd_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:hint="@string/password">
-        </com.google.android.material.textfield.TextInputEditText>
+            android:hint="@string/password"
+            android:inputType="textPassword"></com.google.android.material.textfield.TextInputEditText>
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/signin_button"
-            android:text="@string/signin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp">
-        </androidx.appcompat.widget.AppCompatButton>
+            android:text="@string/signin"></androidx.appcompat.widget.AppCompatButton>
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/signup_button"
-            android:text="@string/signup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginBottom="20dp">
-        </androidx.appcompat.widget.AppCompatButton>
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/signup"></androidx.appcompat.widget.AppCompatButton>
+
         <androidx.appcompat.widget.AppCompatButton
-            android:text="@string/sign_in_google"
-            android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@drawable/btn_signin_google"
-            android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginBottom="100dp">
-        </androidx.appcompat.widget.AppCompatButton>
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="100dp"
+            android:background="@drawable/btn_signin_google"
+            android:text="@string/sign_in_google"
+            android:textColor="@color/white"></androidx.appcompat.widget.AppCompatButton>
 
     </LinearLayout>
 
