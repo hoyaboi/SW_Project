@@ -19,6 +19,15 @@
             android:name=".SignupActivity"
             android:exported="false" />
         <activity
+            android:name=".Adapter"
+            android:exported="false" />
+        <activity
+            android:name=".roomenterActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".roommakeActivity"
+            android:exported="false" />
+        <activity
             android:name=".StartActivity"
             android:exported="false" />
         <activity
