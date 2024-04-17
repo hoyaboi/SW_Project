@@ -20,7 +20,7 @@ class RoomAdapterHolder(v:View):RecyclerView.ViewHolder(v){
     val code=codeView
 }
 
-class RoomAdapter(val datalist:ArrayList<RoomList>) : RecyclerView.Adapter<RoomAdapterHolder>(){
+class Adapter(val datalist:ArrayList<RoomList>) : RecyclerView.Adapter<RoomAdapterHolder>(){
     //var roomlist=mutableListOf<RoomList>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoomAdapterHolder {

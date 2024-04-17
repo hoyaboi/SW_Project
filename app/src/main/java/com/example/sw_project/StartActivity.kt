@@ -35,7 +35,7 @@ class StartActivity : AppCompatActivity() {
         val recyclerView:RecyclerView=findViewById(R.id.recyclerview)
         //recyclerView.layoutManager=LinearLayoutManager(applicationContext,LinearLayoutManager.VERTICAL,false)
         recyclerView.layoutManager=GridLayoutManager(this,2)
-        recyclerView.adapter=RoomAdapter(datalist)
+        recyclerView.adapter=Adapter(datalist)
 
         makeButton.setOnClickListener {
             val intent = Intent(this, roommakeActivity::class.java)
