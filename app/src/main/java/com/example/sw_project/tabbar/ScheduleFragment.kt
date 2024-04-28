@@ -1,6 +1,7 @@
 package com.example.sw_project.tabbar
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,13 +9,9 @@ import android.view.ViewGroup
 import com.example.sw_project.R
 import com.example.sw_project.databinding.FragmentScheduleBinding
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 class ScheduleFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var userEmail: String? = null
+    private var roomID: Int = 0
 
     private var _binding: FragmentScheduleBinding? = null
     private val binding get() = _binding!!
@@ -22,8 +19,8 @@ class ScheduleFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            userEmail = it.getString("userEmail")
+            roomID = it.getInt("roomID", 0)
         }
     }
 
@@ -32,6 +29,13 @@ class ScheduleFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentScheduleBinding.inflate(inflater, container, false)
+        // 여기서 userEmail과 roomID를 사용하여 UI 업데이트
+        // user email과 room id 로깅
+        Log.d("ScheduleFragment", "user email: ${userEmail}, room ID: $roomID")
+
+
+
+
         return binding.root
     }
 
@@ -41,21 +45,14 @@ class ScheduleFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ScheduleFragment.
-         */
+
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(userEmail: String?, roomID: Int) =
             ScheduleFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putString("userEmail", userEmail)
+                    putInt("roomID", roomID)
                 }
             }
     }

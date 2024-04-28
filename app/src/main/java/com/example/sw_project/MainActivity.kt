@@ -1,8 +1,10 @@
 package com.example.sw_project
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
@@ -19,13 +21,15 @@ import com.google.firebase.auth.FirebaseAuth
 class MainActivity : AppCompatActivity() {
     private var user = FirebaseAuth.getInstance().currentUser
     private var roomID = 0
-    // 데이터베이스에서 user email과 room id가 일치하는 데이터를 가져오면 됩니다.
-
-    private lateinit var binding: ActivityMainBinding
+    private var backPressedTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        roomID = intent.getIntExtra("roomID", 0)
+        // user email, room id 로깅
+        Log.d("StartPage", "user email: ${user?.email}, room ID: $roomID")
 
         val viewPager = findViewById<ViewPager2>(R.id.viewpager)
         val tabLayout = findViewById<TabLayout>(R.id.tabs)
@@ -38,11 +42,15 @@ class MainActivity : AppCompatActivity() {
         val backButton = findViewById<AppCompatButton>(R.id.backButton)
 
         backButton.setOnClickListener {
-            startActivity(Intent(this, LoginActivity::class.java))
+            startActivity(Intent(this, StartActivity::class.java))
             finish()
         }
 
-        viewPager.adapter = ViewPagerAdapter(this)
+        viewPager.adapter = ViewPagerAdapter(
+            this,
+            FirebaseAuth.getInstance().currentUser,
+            intent.getIntExtra("roomID", 0)
+        )
 
         // TabLayout과 ViewPager2 연동
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
@@ -56,9 +64,16 @@ class MainActivity : AppCompatActivity() {
             tab.setIcon(tabIcon[position])
         }.attach()
 
-        roomID = intent.getIntExtra("roomID", 0)
-        // user email, room id 로깅
-        Log.d("StartPage", "user email: ${user?.email}, room ID: $roomID")
+    }
 
+    @SuppressLint("MissingSuperCall")
+    override fun onBackPressed() {
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            finishAffinity()
+            return
+        } else {
+            Toast.makeText(this, "뒤로 버튼을 한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
+        }
+        backPressedTime = System.currentTimeMillis()
     }
 }
