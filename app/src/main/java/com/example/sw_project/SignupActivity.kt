@@ -78,7 +78,7 @@ class SignupActivity : AppCompatActivity() {
 
 
                 // 회원 정보 등록 후 StartActivity로 넘어가는 코드
-                startActivity(Intent(this, StartActivity::class.java))
+                startActivity(Intent(this, LoginActivity::class.java))
             } else {
                 Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG).show()
             }
