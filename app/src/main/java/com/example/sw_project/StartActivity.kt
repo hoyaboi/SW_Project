@@ -15,19 +15,22 @@ import android.widget.BaseAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sw_project.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
 
 
 class StartActivity : AppCompatActivity() {
     private var user = FirebaseAuth.getInstance().currentUser
+    private lateinit var binding:ActivityMainBinding
+    val Roomlist= arrayListOf<listItem>()
+    val listAdapter=Adapter(Roomlist)
 
-    val datalist= arrayListOf(
-        RoomList("1번방","abcde"),RoomList("2번방","sh6847"),RoomList("2번방 어디갔어","dkdkdk")
-    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding=ActivityMainBinding.inflate(layoutInflater)
         // enableEdgeToEdge()
-        setContentView(R.layout.activity_start)
+        setContentView(binding.root)
+
         /*ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -41,7 +44,7 @@ class StartActivity : AppCompatActivity() {
         val recyclerView:RecyclerView=findViewById(R.id.recyclerview)
         //recyclerView.layoutManager=LinearLayoutManager(applicationContext,LinearLayoutManager.VERTICAL,false)
         recyclerView.layoutManager=GridLayoutManager(this,2)
-        recyclerView.adapter=Adapter(datalist)
+        recyclerView.adapter=listAdapter
 
         makeButton.setOnClickListener {
             val intent = Intent(this, roommakeActivity::class.java)
@@ -51,5 +54,15 @@ class StartActivity : AppCompatActivity() {
             val intent = Intent(this, roomenterActivity::class.java)
             startActivity(intent)
         }
+        listAdapter.setItemClickListener(object:Adapter.OnItemClickListener{
+            override fun onClick(v:View,position:Int){
+                val intent=Intent(this@StartActivity, MainActivity::class.java)
+                intent.putExtra("roomID", position)
+                startActivity(intent)
+            }
+        })
+
+        Roomlist.add(listItem("abc","dhdhdh"))
+        Roomlist.add(listItem("dddd","aeijfei"))
     }
 }
