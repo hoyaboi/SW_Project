@@ -24,8 +24,7 @@
             android:layout_height="30dp"
             android:layout_gravity="end"
             android:background="@drawable/home"
-            android:layout_marginRight="25dp"
-        />
+            android:layout_marginRight="25dp"/>
     </com.google.android.material.appbar.MaterialToolbar>
 
 
@@ -56,6 +55,7 @@
             app:tabRippleColor="@color/design_default_color_primary"
             app:tabSelectedTextColor="@color/design_default_color_primary"
             app:tabTextColor="@color/black"/>
+
     </com.google.android.material.appbar.AppBarLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,7 +23,13 @@
     <string name="pickdate">날짜 선택</string>
 
     <!-- fragment -->
-
+    <string name="create_board_page_name">새 게시물 등록</string>
+    <string name="add_content">내용을 입력하세요</string>
+    <string name="post">등록하기</string>
+    <string name="back">뒤로가기</string>
+    <string name="add_image">이미지 추가</string>
+    <string name="change_image">이미지 변경</string>
+    <string name="remove_image">이미지 제거</string>
 
 
 </resources>

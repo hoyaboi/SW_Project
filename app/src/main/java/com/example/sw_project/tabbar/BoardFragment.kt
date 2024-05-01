@@ -1,13 +1,17 @@
 package com.example.sw_project.tabbar
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.viewbinding.ViewBindings
+import com.example.sw_project.AddBoardActivity
 import com.example.sw_project.R
 import com.example.sw_project.databinding.FragmentBoardBinding
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseUser
 
 class BoardFragment : Fragment() {
@@ -34,8 +38,14 @@ class BoardFragment : Fragment() {
         // user email과 room id 로깅
         Log.d("BoardFragment", "user email: ${userEmail}, room ID: $roomID")
 
-
-
+        // '+' 플로팅 버튼 클릭시 게시판 추가 페이지로 이동
+        _binding?.addBoard?.setOnClickListener {
+            val intent = Intent(activity, AddBoardActivity::class.java).apply {
+                putExtra("userEmail", userEmail)
+                putExtra("roomID", roomID)
+            }
+            startActivity(intent)
+        }
 
         return binding.root
     }
