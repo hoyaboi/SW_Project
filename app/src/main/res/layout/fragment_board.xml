@@ -24,6 +24,7 @@
         android:layout_marginBottom="16dp"
         android:src="@drawable/add"
         app:backgroundTint="@android:color/white"
+        app:rippleColor="@color/grey"
         app:elevation="6dp"
         app:shapeAppearance="@style/Widget.Material3.CircularProgressIndicator"/>
 

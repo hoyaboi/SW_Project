@@ -40,6 +40,12 @@ class MainActivity : AppCompatActivity() {
 
         val viewPager = findViewById<ViewPager2>(R.id.viewpager)
         val tabLayout = findViewById<TabLayout>(R.id.tabs)
+        val tabTitles = listOf(
+            R.string.tab_board,
+            R.string.tab_album,
+            R.string.tab_schedule,
+            R.string.tab_profile
+        )
         val tabIcon = listOf(
             R.drawable.board,
             R.drawable.album,
@@ -53,23 +59,36 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-        viewPager.adapter = ViewPagerAdapter(
-            this,
-            FirebaseAuth.getInstance().currentUser,
-            intent.getIntExtra("roomID", 0)
-        )
+        viewPager.adapter = ViewPagerAdapter(this, user, roomID)
+        viewPager.isUserInputEnabled = false
 
         // TabLayout과 ViewPager2 연동
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = when (position) {
-                0 -> "게시판"
-                1 -> "앨범"
-                2 -> "일정"
-                3 -> "프로필"
-                else -> null
-            }
+            tab.text = getString(tabTitles[position])
             tab.setIcon(tabIcon[position])
+            tab.icon?.setTint(ContextCompat.getColor(this, R.color.darkgrey))
         }.attach()
+
+        viewPager.post {
+            tabLayout.getTabAt(0)?.let {
+                it.icon?.setTint(ContextCompat.getColor(this, R.color.black))
+                tabLayout.selectTab(it)
+            }
+        }
+
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                tab.icon?.setTint(ContextCompat.getColor(this@MainActivity, R.color.black))
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                tab.icon?.setTint(ContextCompat.getColor(this@MainActivity, R.color.darkgrey))
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                // Optional behavior for reselecting a tab
+            }
+        })
 
     }
 

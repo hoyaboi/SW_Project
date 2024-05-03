@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/lightgrey"
+        android:background="@drawable/toolbar_shadow"
         app:title="@string/app_name">
 
         <androidx.appcompat.widget.AppCompatButton
@@ -48,13 +48,14 @@
 
         <com.google.android.material.tabs.TabLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="65dp"
+            android:paddingTop="5dp"
             android:id="@+id/tabs"
-            android:background="@color/lightgrey"
-            app:tabIndicatorColor="@color/design_default_color_primary"
-            app:tabRippleColor="@color/design_default_color_primary"
-            app:tabSelectedTextColor="@color/design_default_color_primary"
-            app:tabTextColor="@color/black"/>
+            app:tabTextColor="@color/darkgrey"
+            app:tabSelectedTextColor="@color/black"
+            app:tabIndicatorColor="@color/black"
+            app:tabRippleColor="@color/grey"
+            android:background="@drawable/tabbar_shadow"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 

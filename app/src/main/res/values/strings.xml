@@ -30,6 +30,10 @@
     <string name="add_image">이미지 추가</string>
     <string name="change_image">이미지 변경</string>
     <string name="remove_image">이미지 제거</string>
+    <string name="tab_board">게시판</string>
+    <string name="tab_album">앨범</string>
+    <string name="tab_schedule">일정</string>
+    <string name="tab_profile">프로필</string>
 
 
 </resources>
