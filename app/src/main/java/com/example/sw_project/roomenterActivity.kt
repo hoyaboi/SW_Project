@@ -36,6 +36,11 @@ class roomenterActivity : AppCompatActivity() {
             if(RoomName.isNotEmpty() && RoomCode.isNotEmpty()){
                 //이름과 코드가 같은 방을 찾아 목록에 추가, 없으면 틀리다고 메세지
                 //후에 방목록에 대한 정보가 생기면 구현할 예정
+                val intent=Intent(this, StartActivity::class.java)
+                intent.putExtra("roomname",RoomName)
+                intent.putExtra("roomcode",RoomCode)
+                intent.putExtra("check",1)
+                startActivity(intent)
                 finish()
             }
 

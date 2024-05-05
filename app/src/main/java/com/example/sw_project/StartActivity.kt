@@ -26,6 +26,8 @@ class StartActivity : AppCompatActivity() {
     private lateinit var binding:ActivityStartBinding
     val Roomlist= arrayListOf<listItem>()
     val listAdapter=Adapter(Roomlist)
+    lateinit var Roomname:String
+    lateinit var Roomcode:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,11 +50,12 @@ class StartActivity : AppCompatActivity() {
         //recyclerView.layoutManager=LinearLayoutManager(applicationContext,LinearLayoutManager.VERTICAL,false)
         //recyclerView.layoutManager=GridLayoutManager(this,2)
         //recyclerView.adapter=listAdapter
-        binding.recyclerview.layoutManager=LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
+        binding.recyclerview.layoutManager=LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)
         binding.recyclerview.adapter= listAdapter
         makeButton.setOnClickListener {
             val intent = Intent(this, roommakeActivity::class.java)
             startActivity(intent)
+
         }
         enterButton.setOnClickListener {
             val intent = Intent(this, roomenterActivity::class.java)
@@ -65,8 +68,14 @@ class StartActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         })
-
+//테스트용
         Roomlist.add(listItem("abc","dhdhdh"))
         Roomlist.add(listItem("dddd","aeijfei"))
+        val name: String =intent.getStringExtra("roomname").toString()
+        val code: String =intent.getStringExtra("roomcode").toString()
+        val check =intent.getIntExtra("check",0)
+        if(check==1) {
+            Roomlist.add(listItem(name, code))
+        }
     }
 }
