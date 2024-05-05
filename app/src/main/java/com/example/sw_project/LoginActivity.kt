@@ -108,7 +108,7 @@ class LoginActivity : AppCompatActivity() {
 
                     // 테스트 코드
                     val roomID = 1000
-                    var intent = Intent(this, MainActivity::class.java)
+                    var intent = Intent(this, StartActivity::class.java)
                     intent.putExtra("roomID", roomID)
                     startActivity(intent)
                 } else {

@@ -50,9 +50,10 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.play.services.auth)
     implementation(libs.androidx.recyclerview)
-    implementation(libs.androidx.viewpager2)
-    implementation(libs.google.material)
+    //implementation(libs.androidx.viewpager2)
+    //implementation(libs.google.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    //implementation("androidx.recyclerview:recyclerview:1.3.1")
 }

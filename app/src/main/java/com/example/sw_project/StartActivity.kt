@@ -16,20 +16,23 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sw_project.databinding.ActivityMainBinding
+import com.example.sw_project.databinding.ActivityStartBinding
+import com.example.sw_project.databinding.ActivityStartBinding.inflate
 import com.google.firebase.auth.FirebaseAuth
 
 
 class StartActivity : AppCompatActivity() {
     private var user = FirebaseAuth.getInstance().currentUser
-    private lateinit var binding:ActivityMainBinding
+    private lateinit var binding:ActivityStartBinding
     val Roomlist= arrayListOf<listItem>()
     val listAdapter=Adapter(Roomlist)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding=ActivityMainBinding.inflate(layoutInflater)
+        binding= ActivityStartBinding.inflate(layoutInflater)
         // enableEdgeToEdge()
-        setContentView(binding.root)
+        val view=binding.root
+        setContentView(view)
 
         /*ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -41,11 +44,12 @@ class StartActivity : AppCompatActivity() {
 
         val makeButton= findViewById<Button>(R.id.makebutton)
         val enterButton=findViewById<Button>(R.id.enterbutton)
-        val recyclerView:RecyclerView=findViewById(R.id.recyclerview)
+        //val recyclerView:RecyclerView=findViewById(R.id.recyclerview)
         //recyclerView.layoutManager=LinearLayoutManager(applicationContext,LinearLayoutManager.VERTICAL,false)
-        recyclerView.layoutManager=GridLayoutManager(this,2)
-        recyclerView.adapter=listAdapter
-
+        //recyclerView.layoutManager=GridLayoutManager(this,2)
+        //recyclerView.adapter=listAdapter
+        binding.recyclerview.layoutManager=LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
+        binding.recyclerview.adapter= listAdapter
         makeButton.setOnClickListener {
             val intent = Intent(this, roommakeActivity::class.java)
             startActivity(intent)
