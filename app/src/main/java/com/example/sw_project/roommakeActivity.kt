@@ -35,7 +35,11 @@ class roommakeActivity : AppCompatActivity() {
             val RoomCode=editRoomCode.getText().toString()
             if(RoomName.isNotEmpty() && RoomCode.isNotEmpty()){
                 //이름과 코드가 같은 방이 없을 경우 방 생성
-                finish()
+                val intent=Intent(this, StartActivity::class.java)
+                intent.putExtra("roomname",RoomName)
+                intent.putExtra("roomcode",RoomCode)
+                intent.putExtra("check",1)
+                startActivity(intent)
             }
 
             Log.d("Room make success","Room_Name: $RoomName, Room_Code: $RoomCode")
