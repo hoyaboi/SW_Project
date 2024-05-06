@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginBottom="150dp"
+            android:layout_marginBottom="200dp"
             android:backgroundTint="@color/lightgrey"
             app:strokeColor="@color/grey"
             app:strokeWidth="1dp"
