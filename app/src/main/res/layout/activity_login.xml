@@ -35,6 +35,7 @@
             android:layout_marginRight="20dp"
             android:hint="@string/email">
         </com.google.android.material.textfield.TextInputEditText>
+
         <com.google.android.material.textfield.TextInputEditText
             android:inputType="textPassword"
             android:id="@+id/pwd_edittext"
@@ -44,24 +45,35 @@
             android:layout_marginRight="20dp"
             android:hint="@string/password">
         </com.google.android.material.textfield.TextInputEditText>
-        <androidx.appcompat.widget.AppCompatButton
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/signin_button"
             android:text="@string/signin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp">
-        </androidx.appcompat.widget.AppCompatButton>
-        <androidx.appcompat.widget.AppCompatButton
+            android:layout_marginLeft="20dp"
+            android:backgroundTint="@color/lightgrey"
+            app:strokeColor="@color/grey"
+            app:strokeWidth="1dp"
+            app:rippleColor="@color/grey"
+            android:textColor="@color/black"/>
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/signup_page_button"
             android:text="@string/signup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginBottom="150dp">
-        </androidx.appcompat.widget.AppCompatButton>
+            android:layout_marginBottom="200dp"
+            android:backgroundTint="@color/lightgrey"
+            app:strokeColor="@color/grey"
+            app:strokeWidth="1dp"
+            app:rippleColor="@color/grey"
+            android:textColor="@color/black"/>
+
 <!--        <androidx.appcompat.widget.AppCompatButton-->
 <!--            android:id="@+id/signin_google"-->
 <!--            android:text="@string/sign_in_google"-->
