@@ -29,6 +29,9 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class AddBoardActivity : AppCompatActivity() {
     private var userEmail: String? = null
@@ -132,7 +135,9 @@ class AddBoardActivity : AppCompatActivity() {
         coroutineScope.launch {
             // 게시글 내용과 작성 시간 가져오기
             val content = contentEditText.text.toString().trim()
-            val postTime = System.currentTimeMillis()
+            val currentTime = System.currentTimeMillis()
+            val dateFormatter = SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss", Locale.getDefault())
+            val postTime = dateFormatter.format(Date(currentTime))
 
             // 이미지 URI 가져오기
             val imageUri: Uri? = (imageView.drawable as? BitmapDrawable)?.bitmap?.let { bitmap ->
