@@ -17,14 +17,17 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.example.sw_project.databinding.ActivityMainBinding
 import com.example.sw_project.tabbar.ViewPagerAdapter
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
     private var user = FirebaseAuth.getInstance().currentUser
-    private var roomID = 0
+    private var roomID: String? = null
+    private var roomName: String? = null
     private var backPressedTime: Long = 0
+    private lateinit var toolBarTitle: MaterialToolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,9 +37,13 @@ class MainActivity : AppCompatActivity() {
         window.statusBarColor = ContextCompat.getColor(this, R.color.lightgrey)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
-        roomID = intent.getIntExtra("roomID", 0)
+        roomID = intent.getStringExtra("roomID")
+        roomName = intent.getStringExtra("roomName")
         // user email, room id 로깅
-        Log.d("StartPage", "user email: ${user?.email}, room ID: $roomID")
+        Log.d("MainActivity", "user email: ${user?.email}, room ID: $roomID")
+
+        toolBarTitle = findViewById(R.id.toolbar)
+        toolBarTitle.title = roomName
 
         val viewPager = findViewById<ViewPager2>(R.id.viewpager)
         val tabLayout = findViewById<TabLayout>(R.id.tabs)

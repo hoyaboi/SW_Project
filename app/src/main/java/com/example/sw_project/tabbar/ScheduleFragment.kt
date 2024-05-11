@@ -11,7 +11,7 @@ import com.example.sw_project.databinding.FragmentScheduleBinding
 
 class ScheduleFragment : Fragment() {
     private var userEmail: String? = null
-    private var roomID: Int = 0
+    private var roomID: String? = null
 
     private var _binding: FragmentScheduleBinding? = null
     private val binding get() = _binding!!
@@ -20,7 +20,7 @@ class ScheduleFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             userEmail = it.getString("userEmail")
-            roomID = it.getInt("roomID", 0)
+            roomID = it.getString("roomID")
         }
     }
 
@@ -48,11 +48,11 @@ class ScheduleFragment : Fragment() {
 
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(userEmail: String?, roomID: Int) =
+        fun newInstance(userEmail: String?, roomID: String?) =
             ScheduleFragment().apply {
                 arguments = Bundle().apply {
                     putString("userEmail", userEmail)
-                    putInt("roomID", roomID)
+                    putString("roomID", roomID)
                 }
             }
     }

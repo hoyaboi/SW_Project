@@ -25,7 +25,6 @@ class Adapter(val Roomlist:ArrayList<listItem>) : RecyclerView.Adapter<Adapter.R
     }
     override fun onBindViewHolder(holder: RoomAdapterHolder, position: Int) {
         holder.name.text=Roomlist[position].name
-        holder.code.text=Roomlist[position].code
 
         holder.itemView.setOnClickListener{
             itemClickListener.onClick(it,position)
@@ -40,9 +39,7 @@ class Adapter(val Roomlist:ArrayList<listItem>) : RecyclerView.Adapter<Adapter.R
     private lateinit var itemClickListener:OnItemClickListener
     class RoomAdapterHolder(v:View) :RecyclerView.ViewHolder(v){
         var nameView:TextView=v.findViewById(R.id.roomView_name)
-        var codeView:TextView=v.findViewById(R.id.roomView_code)
         val name=nameView
-        val code=codeView
     }
     override fun getItemCount(): Int {
         return Roomlist.size

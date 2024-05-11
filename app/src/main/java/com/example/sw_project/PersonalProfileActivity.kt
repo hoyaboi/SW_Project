@@ -1,6 +1,7 @@
 package com.example.sw_project
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -10,8 +11,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class PersonalProfileActivity : AppCompatActivity() {
-    private var profileName: String? = null
-    private var roomID: Int = 0
+    private var memberName: String? = null
+    private var roomID: String? = null
 
     private lateinit var profileNameText: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,15 +23,21 @@ class PersonalProfileActivity : AppCompatActivity() {
         window.statusBarColor = ContextCompat.getColor(this, R.color.lightgrey)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
-        profileName = intent.getStringExtra("profileName")
-        roomID = intent.getIntExtra("roomID", 0)
+        memberName = intent.getStringExtra("memberName")
+        roomID = intent.getStringExtra("roomID")
+        Log.d("PersonalProfileActivity", "name: $memberName, room ID: $roomID")
 
         setupView()
+        setupListeners()
 
-        profileNameText.text = "${profileName}'s Profile"
+        profileNameText.text = "${memberName}'s Profile"
     }
 
     private fun setupView() {
         profileNameText = findViewById(R.id.tmp_string)
+    }
+
+    private fun setupListeners() {
+
     }
 }

@@ -18,7 +18,7 @@ import java.util.Locale
 // 데이터 클래스 정의
 data class BoardItem(
     val profileImageUrl : String,
-    val profileName: String,
+    val memberName: String,
     val imageUrl: String,
     val likeCount: Int,
     val contentText: String,
@@ -37,18 +37,18 @@ class BoardDiffCallback : DiffUtil.ItemCallback<BoardItem>() {
 }
 
 // BoardAdapter 구현
-class BoardAdapter(private val roomID: Int) : ListAdapter<BoardItem, BoardAdapter.BoardViewHolder>(BoardDiffCallback()) {
-    class BoardViewHolder(itemView: View, private val roomID: Int) : RecyclerView.ViewHolder(itemView) {
+class BoardAdapter(private val roomID: String?) : ListAdapter<BoardItem, BoardAdapter.BoardViewHolder>(BoardDiffCallback()) {
+    class BoardViewHolder(itemView: View, private val roomID: String?) : RecyclerView.ViewHolder(itemView) {
         private val profileContainer: LinearLayout = itemView.findViewById(R.id.profile_container)
         private val profileImageView: ImageView = itemView.findViewById(R.id.profile_image)
-        private val profileNameText: TextView = itemView.findViewById(R.id.profile_name)
+        private val memberNameText: TextView = itemView.findViewById(R.id.member_name)
         private val imageView: ImageView = itemView.findViewById(R.id.image)
         private val likeCountText: TextView = itemView.findViewById(R.id.like_count_text)
         private val contentText: TextView = itemView.findViewById(R.id.content_text)
         private val dateText: TextView = itemView.findViewById(R.id.date_text)
 
         fun bind(item: BoardItem) {
-            profileNameText.text = item.profileName
+            memberNameText.text = item.memberName
             likeCountText.text = "공감 ${item.likeCount}개"
             contentText.text = item.contentText
             val inputFormat = SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss", Locale.getDefault())
@@ -60,8 +60,8 @@ class BoardAdapter(private val roomID: Int) : ListAdapter<BoardItem, BoardAdapte
             profileContainer.setOnClickListener {
                 val context = itemView.context
                 val intent = Intent(context, PersonalProfileActivity::class.java)
-                intent.putExtra("profileName", item.profileName)
-                intent.putExtra("roomID, ", roomID)
+                intent.putExtra("memberName", item.memberName)
+                intent.putExtra("roomID", roomID)
                 context.startActivity(intent)
             }
 

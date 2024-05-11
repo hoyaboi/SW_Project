@@ -8,7 +8,7 @@ import com.google.firebase.auth.FirebaseUser
 class ViewPagerAdapter(
     fragmentActivity: FragmentActivity,
     private val user: FirebaseUser?,
-    private val roomID: Int
+    private val roomID: String?,
 ) : FragmentStateAdapter(fragmentActivity) {
     private val NUM_PAGES = 4
     override fun getItemCount(): Int = NUM_PAGES  // 총 페이지 수

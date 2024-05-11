@@ -1,70 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="36dp"
-        android:gravity="center"
-        android:text="방 입장하기"
-        android:textSize="25dp"
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="80dp"
+            android:gravity="center"
+            android:text="@string/roomenter"
+            android:textSize="30sp"/>
 
-        app:layout_constraintBottom_toTopOf="@+id/Roomname"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/Roomname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="20dp"
+            android:hint="@string/roomname"
+            android:inputType="text"/>
 
-    <Button
-        android:id="@+id/checkbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="308dp"
-        android:text="@string/check"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.325"
-        app:layout_constraintStart_toStartOf="parent" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/Roomcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:hint="@string/roomcode"
+            android:inputType="numberPassword"/>
 
-    <Button
-        android:id="@+id/cancelbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/cancel"
-        app:layout_constraintBaseline_toBaselineOf="@+id/checkbutton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.674"
-        app:layout_constraintStart_toStartOf="parent" />
+        <LinearLayout
+            android:id="@+id/button_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:orientation="horizontal"
+            android:gravity="center">
 
-    <EditText
-        android:id="@+id/Roomname"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="250dp"
-        android:hint="@string/roomname"
-        android:inputType="text"
-        app:layout_constraintBottom_toTopOf="@+id/Roomcode"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/checkbutton"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="@string/check"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/lightgrey"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/grey"
+                app:rippleColor="@color/grey"/>
 
-    <EditText
-        android:id="@+id/Roomcode"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="370dp"
-        android:hint="@string/roomcode"
-        android:inputType="text"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Roomname" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/cancelbutton"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@string/cancel"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/lightgrey"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/grey"
+                app:rippleColor="@color/grey"/>
 
+        </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+</RelativeLayout>
