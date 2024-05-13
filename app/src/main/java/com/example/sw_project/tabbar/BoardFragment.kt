@@ -42,7 +42,7 @@ class BoardFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentBoardBinding.inflate(inflater, container, false)
         // user email과 room id 로깅
         Log.d("BoardFragment", "user email: ${userEmail}, room ID: $roomID")
@@ -109,6 +109,7 @@ class BoardFragment : Fragment() {
             // 현재는 임시 데이터로 작성했습니다.
             // 공감 카운트 증가를 위한 DB 업데이트 코드는 ListAdapter.kt에서(103 line) 작성하시면 됩니다.
             BoardItem(
+                roomID = "$roomID",
                 boardID = "1",
                 profileImageUrl = "",
                 memberName = "Member 1",
@@ -118,6 +119,7 @@ class BoardFragment : Fragment() {
                 dateText = "2024년 05월 05일 14:20:20"
             ),
             BoardItem(
+                roomID = "$roomID",
                 boardID = "2",
                 profileImageUrl = "",
                 memberName = "Member 2",
@@ -127,6 +129,7 @@ class BoardFragment : Fragment() {
                 dateText = "2024년 05월 04일 13:15:20"
             ),
             BoardItem(
+                roomID = "$roomID",
                 boardID = "3",
                 profileImageUrl = "",
                 memberName = "Member 3",
@@ -136,6 +139,7 @@ class BoardFragment : Fragment() {
                 dateText = "2024년 05월 04일 13:15:25"
             ),
             BoardItem(
+                roomID = "$roomID",
                 boardID = "4",
                 profileImageUrl = "",
                 memberName = "Member 4",

@@ -21,6 +21,7 @@ import java.util.Locale
 
 // 데이터 클래스 정의
 data class BoardItem(
+    val roomID: String,
     val boardID: String,
     val profileImageUrl : String,
     val memberName: String,
