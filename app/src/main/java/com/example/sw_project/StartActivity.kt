@@ -67,6 +67,7 @@ class StartActivity : AppCompatActivity() {
             val intent = Intent(this, roomenterActivity::class.java)
             startActivity(intent)
         }
+        //원하는 방 선택시 해당방의 index번호(position변수)를 넘겨주며 main화면으로
         listAdapter.setItemClickListener(object:Adapter.OnItemClickListener{
             override fun onClick(v:View,position:Int){
                 val intent=Intent(this@StartActivity, MainActivity::class.java)
