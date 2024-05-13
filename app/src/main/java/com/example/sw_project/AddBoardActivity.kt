@@ -29,10 +29,13 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class AddBoardActivity : AppCompatActivity() {
     private var userEmail: String? = null
-    private var roomID: Int = 0
+    private var roomID: String? = null
 
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
     private lateinit var imageView: ImageView
@@ -61,7 +64,7 @@ class AddBoardActivity : AppCompatActivity() {
 
         // 이전 프래그먼트로부터 데이터 받기
         userEmail = intent.getStringExtra("userEmail")
-        roomID = intent.getIntExtra("roomID", 0)
+        roomID = intent.getStringExtra("roomID")
 
         // 이미지 추가 버튼 클릭 시
         addImageButton.setOnClickListener {
@@ -89,15 +92,15 @@ class AddBoardActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
-        imageView = findViewById<ImageView>(R.id.selected_image)
-        contentEditText = findViewById<TextInputEditText>(R.id.edit_content)
-        imageActionsContainer = findViewById<LinearLayout>(R.id.image_actions_container)
-        addImageContainer = findViewById<LinearLayout>(R.id.add_image_container)
-        addImageButton = findViewById<FloatingActionButton>(R.id.add_image_button)
-        changeImageButton = findViewById<MaterialButton>(R.id.change_image_button)
-        removeImageButton = findViewById<MaterialButton>(R.id.remove_image_button)
-        postButton = findViewById<MaterialButton>(R.id.post_button)
-        progressBar = findViewById<ProgressBar>(R.id.progressBar)
+        imageView = findViewById(R.id.selected_image)
+        contentEditText = findViewById(R.id.edit_content)
+        imageActionsContainer = findViewById(R.id.image_actions_container)
+        addImageContainer = findViewById(R.id.add_image_container)
+        addImageButton = findViewById(R.id.add_image_button)
+        changeImageButton = findViewById(R.id.change_image_button)
+        removeImageButton = findViewById(R.id.remove_image_button)
+        postButton = findViewById(R.id.post_button)
+        progressBar = findViewById(R.id.progressBar)
     }
 
     private fun setupPermissions() {
@@ -132,7 +135,9 @@ class AddBoardActivity : AppCompatActivity() {
         coroutineScope.launch {
             // 게시글 내용과 작성 시간 가져오기
             val content = contentEditText.text.toString().trim()
-            val postTime = System.currentTimeMillis()
+            val currentTime = System.currentTimeMillis()
+            val dateFormatter = SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss", Locale.getDefault())
+            val postTime = dateFormatter.format(Date(currentTime))
 
             // 이미지 URI 가져오기
             val imageUri: Uri? = (imageView.drawable as? BitmapDrawable)?.bitmap?.let { bitmap ->

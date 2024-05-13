@@ -11,8 +11,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import java.util.Calendar
+import com.google.firebase.database.FirebaseDatabase
 
 class SignupActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
@@ -71,10 +73,32 @@ class SignupActivity : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(id, pwd).addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
                 // 디버깅을 위해 Logcat에 입력받은 이메일, 비번, 이름, 생년월일 출력하는 코드(다 작성하시고 지워주세요)
-                Log.d("SignUp", "Email: $id, Password: $pwd, Name: $name, Birthdate: $birthDate")
+                //Log.d("SignUp", "Email: $id, Password: $pwd, Name: $name, Birthdate: $birthDate")
 
                 // 생성된 계정의 이메일과 이름, 생년월일 데이터를 데이터베이스에 저장하는 코드 구현하시면 됩니다.
                 // 이메일, 이름, 생년월일 각각 id, name, birthDate 변수에 담아져 있습니다.
+                // 사용자 정보를 저장할 데이터 클래스 정의
+                val currentUser = auth.currentUser
+                val databaseReference = FirebaseDatabase.getInstance().reference
+
+                // 사용자 정보를 HashMap으로 변환
+                val userInfoMap = HashMap<String, Any>()
+                userInfoMap["email"] = id
+                userInfoMap["name"] = name
+                userInfoMap["birthDate"] = birthDate
+
+                // "users" 테이블에 사용자 정보 저장
+                currentUser?.uid?.let { userId ->
+                    databaseReference.child("users").child(userId).setValue(userInfoMap)
+                        .addOnSuccessListener {
+                            Log.d("SignUp", "User information saved successfully")
+                            startActivity(Intent(this, LoginActivity::class.java))
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("SignUp", "Error saving user information: $e")
+                            Toast.makeText(this, "Failed to save user information", Toast.LENGTH_SHORT).show()
+                        }
+                }
 
 
                 // 회원 정보 등록 후 StartActivity로 넘어가는 코드
@@ -99,4 +123,3 @@ class SignupActivity : AppCompatActivity() {
         datePickerDialog.show()
     }
 }
-

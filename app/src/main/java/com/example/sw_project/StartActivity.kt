@@ -12,6 +12,8 @@ import android.widget.GridView
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.ReportFragment.Companion.reportFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,6 +37,10 @@ class StartActivity : AppCompatActivity() {
         // enableEdgeToEdge()
         val view=binding.root
         setContentView(view)
+
+        // 상태표시줄 색상 변경
+        window.statusBarColor = ContextCompat.getColor(this, R.color.lightgrey)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         /*ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -65,7 +71,8 @@ class StartActivity : AppCompatActivity() {
         listAdapter.setItemClickListener(object:Adapter.OnItemClickListener{
             override fun onClick(v:View,position:Int){
                 val intent=Intent(this@StartActivity, MainActivity::class.java)
-                intent.putExtra("roomID", position)
+                intent.putExtra("roomID", Roomlist[position].code)
+                intent.putExtra("roomName", Roomlist[position].name)
                 startActivity(intent)
             }
         })
