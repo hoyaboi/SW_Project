@@ -1,26 +1,21 @@
-package com.example.sw_project
+package com.example.sw_project.models.com.example.sw_project.adapter
 
-import android.content.Intent
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.example.sw_project.R
+
 //data class RoomList(var name: String, var code: String)
 
-
+data class listItem(val name: String, val code: String)
 
 class Adapter(val Roomlist:ArrayList<listItem>) : RecyclerView.Adapter<Adapter.RoomAdapterHolder>(){
     //var roomlist=mutableListOf<RoomList>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoomAdapterHolder {
-        val view=LayoutInflater.from(parent.context).inflate(R.layout.activity_room,parent,false)
+        val view=LayoutInflater.from(parent.context).inflate(R.layout.item_room,parent,false)
         return RoomAdapterHolder(view)
     }
     override fun onBindViewHolder(holder: RoomAdapterHolder, position: Int) {
@@ -36,7 +31,7 @@ class Adapter(val Roomlist:ArrayList<listItem>) : RecyclerView.Adapter<Adapter.R
     fun setItemClickListener(onItemClickListener: OnItemClickListener){
         this.itemClickListener=onItemClickListener
     }
-    private lateinit var itemClickListener:OnItemClickListener
+    private lateinit var itemClickListener: OnItemClickListener
     class RoomAdapterHolder(v:View) :RecyclerView.ViewHolder(v){
         var nameView:TextView=v.findViewById(R.id.roomView_name)
         val name=nameView

@@ -3,19 +3,17 @@ package com.example.sw_project
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.EdgeEffect
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.google.android.material.textfield.TextInputEditText
 import android.util.Log
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import android.widget.Toast
+import com.example.sw_project.models.com.example.sw_project.adapter.Adapter
+import com.example.sw_project.models.com.example.sw_project.adapter.listItem
 
-class roommakeActivity : AppCompatActivity() {
+class RoomMakeActivity : AppCompatActivity() {
 
     private lateinit var databaseReference: DatabaseReference
     private lateinit var Roomlist: ArrayList<listItem>
@@ -41,7 +39,7 @@ class roommakeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_roommake)
+        setContentView(R.layout.activity_room_make)
        /* ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)

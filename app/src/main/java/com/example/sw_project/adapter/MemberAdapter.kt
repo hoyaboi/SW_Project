@@ -1,4 +1,4 @@
-package com.example.sw_project
+package com.example.sw_project.models.com.example.sw_project.adapter
 
 import android.content.Intent
 import android.view.LayoutInflater
@@ -9,6 +9,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.sw_project.PersonalProfileActivity
+import com.example.sw_project.R
 
 // 데이터 클래스 정의
 data class MemberItem(

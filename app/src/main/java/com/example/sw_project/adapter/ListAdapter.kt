@@ -1,4 +1,4 @@
-package com.example.sw_project
+package com.example.sw_project.models.com.example.sw_project.adapter
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.ListAdapter
 import com.bumptech.glide.Glide
+import com.example.sw_project.PersonalProfileActivity
+import com.example.sw_project.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -43,7 +45,9 @@ class BoardDiffCallback : DiffUtil.ItemCallback<BoardItem>() {
 }
 
 // BoardAdapter 구현
-class BoardAdapter(private val roomID: String?) : ListAdapter<BoardItem, BoardAdapter.BoardViewHolder>(BoardDiffCallback()) {
+class BoardAdapter(private val roomID: String?) : ListAdapter<BoardItem, BoardAdapter.BoardViewHolder>(
+    BoardDiffCallback()
+) {
     @SuppressLint("ClickableViewAccessibility")
     class BoardViewHolder(itemView: View, private val roomID: String?, private val adapter: BoardAdapter) : RecyclerView.ViewHolder(itemView) {
         private val profileContainer: LinearLayout = itemView.findViewById(R.id.profile_container)
@@ -121,7 +125,7 @@ class BoardAdapter(private val roomID: String?) : ListAdapter<BoardItem, BoardAd
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoardViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.board_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_board, parent, false)
         return BoardViewHolder(view, roomID, this)
     }
 

@@ -9,9 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sw_project.AddAlbumActivity
-import com.example.sw_project.AddBoardActivity
-import com.example.sw_project.Album_Adapter
-import com.example.sw_project.Album_list
+import com.example.sw_project.models.com.example.sw_project.adapter.Album_Adapter
+import com.example.sw_project.models.com.example.sw_project.adapter.Album_list
 import com.example.sw_project.PhotoviewActivity
 import com.example.sw_project.databinding.FragmentAlbumBinding
 
@@ -25,7 +24,7 @@ class AlbumFragment : Fragment() {
 
     private lateinit var binding2:FragmentAlbumBinding
     val Albumlist= arrayListOf<Album_list>()
-    val Albumadapter=Album_Adapter(Albumlist)
+    val Albumadapter= Album_Adapter(Albumlist)
 
     lateinit var Albumname:String
 
@@ -53,7 +52,7 @@ class AlbumFragment : Fragment() {
         binding.recyclerview.layoutManager=LinearLayoutManager(this.activity,LinearLayoutManager.HORIZONTAL,false)
         binding.recyclerview.adapter=Albumadapter
 //앨범 클릭시 앨범 index를 넘겨주며 사진 목록 화면으로 넘어감
-        Albumadapter.setItemClickListener(object:Album_Adapter.OnItemClickListener{
+        Albumadapter.setItemClickListener(object: Album_Adapter.OnItemClickListener{
           override fun onClick(v:View,position:Int){
             val intent=Intent(activity, PhotoviewActivity::class.java)
           intent.putExtra("albumID",position)

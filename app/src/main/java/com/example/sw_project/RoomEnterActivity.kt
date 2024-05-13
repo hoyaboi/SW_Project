@@ -3,19 +3,15 @@ package com.example.sw_project
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.EdgeEffect
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.google.android.material.textfield.TextInputEditText
 import android.util.Log
 import com.google.firebase.database.*
 import android.widget.Toast
 import com.example.sw_project.models.Room
 
-class roomenterActivity : AppCompatActivity() {
+class RoomEnterActivity : AppCompatActivity() {
     private lateinit var databaseReference: DatabaseReference
 
     private fun enterRoom(roomName: String, roomCode: String) {
@@ -30,7 +26,7 @@ class roomenterActivity : AppCompatActivity() {
                         if (room?.roomCode == roomCode) {
                             // 입력한 코드가 일치하는 경우
                             // 입장할 방으로 이동하는 코드 추가
-                            val intent = Intent(this@roomenterActivity, MainActivity::class.java)
+                            val intent = Intent(this@RoomEnterActivity, MainActivity::class.java)
                             intent.putExtra("roomId", room.roomId)
                             startActivity(intent)
                             finish()
@@ -38,17 +34,17 @@ class roomenterActivity : AppCompatActivity() {
                         }
                     }
                     // 일치하는 코드가 없는 경우
-                    Toast.makeText(this@roomenterActivity, "잘못된 코드입니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@RoomEnterActivity, "잘못된 코드입니다.", Toast.LENGTH_SHORT).show()
                 } else {
                     // 해당하는 이름의 방이 없는 경우
-                    Toast.makeText(this@roomenterActivity, "존재하지 않는 방 이름입니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@RoomEnterActivity, "존재하지 않는 방 이름입니다.", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 // 데이터베이스 쿼리가 취소된 경우
                 Log.e("roomenterActivity", "Error querying room: $databaseError")
-                Toast.makeText(this@roomenterActivity, "방을 찾는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@RoomEnterActivity, "방을 찾는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -56,7 +52,7 @@ class roomenterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_roomenter)
+        setContentView(R.layout.activity_room_enter)
        /* ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)

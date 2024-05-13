@@ -1,16 +1,19 @@
-package com.example.sw_project
+package com.example.sw_project.models.com.example.sw_project.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sw_project.R
+
+data class Album_list(val name:String)
 
 class Album_Adapter(val Albumlist:ArrayList<Album_list>):RecyclerView.Adapter<Album_Adapter.AlbumAdapterHolder>() {
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Album_Adapter.AlbumAdapterHolder {
-        val view=LayoutInflater.from(parent.context).inflate(R.layout.activity_album,parent,false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumAdapterHolder {
+        val view=LayoutInflater.from(parent.context).inflate(R.layout.item_album,parent,false)
         return AlbumAdapterHolder(view)
     }
 
@@ -26,7 +29,7 @@ class Album_Adapter(val Albumlist:ArrayList<Album_list>):RecyclerView.Adapter<Al
     fun setItemClickListener(onItemClickListener: OnItemClickListener){
         this.itemClickListener=onItemClickListener
     }
-    private lateinit var itemClickListener:OnItemClickListener
+    private lateinit var itemClickListener: OnItemClickListener
 
     class AlbumAdapterHolder(v:View):RecyclerView.ViewHolder(v){
         var nameView: TextView =v.findViewById(R.id.album_name)
