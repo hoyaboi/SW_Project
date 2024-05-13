@@ -1,7 +1,11 @@
 package com.example.sw_project
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.util.Log
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -17,10 +21,11 @@ import java.util.Locale
 
 // 데이터 클래스 정의
 data class BoardItem(
+    val boardID: String,
     val profileImageUrl : String,
     val memberName: String,
     val imageUrl: String,
-    val likeCount: Int,
+    var likeCount: Int,
     val contentText: String,
     val dateText: String
 )
@@ -28,7 +33,7 @@ data class BoardItem(
 // DiffCallback 클래스 구현
 class BoardDiffCallback : DiffUtil.ItemCallback<BoardItem>() {
     override fun areItemsTheSame(oldItem: BoardItem, newItem: BoardItem): Boolean {
-        return oldItem.imageUrl == newItem.imageUrl
+        return oldItem.boardID == newItem.boardID
     }
 
     override fun areContentsTheSame(oldItem: BoardItem, newItem: BoardItem): Boolean {
@@ -38,7 +43,8 @@ class BoardDiffCallback : DiffUtil.ItemCallback<BoardItem>() {
 
 // BoardAdapter 구현
 class BoardAdapter(private val roomID: String?) : ListAdapter<BoardItem, BoardAdapter.BoardViewHolder>(BoardDiffCallback()) {
-    class BoardViewHolder(itemView: View, private val roomID: String?) : RecyclerView.ViewHolder(itemView) {
+    @SuppressLint("ClickableViewAccessibility")
+    class BoardViewHolder(itemView: View, private val roomID: String?, private val adapter: BoardAdapter) : RecyclerView.ViewHolder(itemView) {
         private val profileContainer: LinearLayout = itemView.findViewById(R.id.profile_container)
         private val profileImageView: ImageView = itemView.findViewById(R.id.profile_image)
         private val memberNameText: TextView = itemView.findViewById(R.id.member_name)
@@ -46,6 +52,14 @@ class BoardAdapter(private val roomID: String?) : ListAdapter<BoardItem, BoardAd
         private val likeCountText: TextView = itemView.findViewById(R.id.like_count_text)
         private val contentText: TextView = itemView.findViewById(R.id.content_text)
         private val dateText: TextView = itemView.findViewById(R.id.date_text)
+        private val gestureDetector = GestureDetector(itemView.context, GestureListener(), null, false)
+
+        init {
+            contentText.setOnTouchListener { v, event ->
+                gestureDetector.onTouchEvent(event)
+                true
+            }
+        }
 
         fun bind(item: BoardItem) {
             memberNameText.text = item.memberName
@@ -85,11 +99,29 @@ class BoardAdapter(private val roomID: String?) : ListAdapter<BoardItem, BoardAd
                 imageView.visibility = View.GONE
             }
         }
+
+        // 게시물 내용 더블 클릭 시 공감 카운트 증가 코드
+        private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
+            override fun onDoubleTap(e: MotionEvent): Boolean {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val currentItem = adapter.getItem(position)
+                    currentItem.likeCount += 1  // likeCount를 1 증가
+                    Log.d("BoardAdapter", "Double tapped, like count updated: ${currentItem.likeCount}")
+                    adapter.notifyItemChanged(position)  // 해당 포지션의 아이템을 업데이트
+                    // *** DB 업데이트 ***
+                    // 이곳에 해당 position 게시물의 증가된 currentItem.likeCount로 업데이트 하시면 됩니다.
+                    // 각 게시물은 boardID로 구분하시면 됩니다.
+
+                }
+                return true
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoardViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.board_item, parent, false)
-        return BoardViewHolder(view, roomID)
+        return BoardViewHolder(view, roomID, this)
     }
 
     override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {

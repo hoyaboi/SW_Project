@@ -59,6 +59,7 @@ class LoginActivity : AppCompatActivity() {
 //        googleSignInClient = GoogleSignIn.getClient(this, gso)
     }
 
+    @Deprecated("Deprecated in Java")
     @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
         if (backPressedTime + 2000 > System.currentTimeMillis()) {
