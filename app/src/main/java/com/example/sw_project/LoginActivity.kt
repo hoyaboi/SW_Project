@@ -20,10 +20,13 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.*
+import com.example.sw_project.models.Users
 
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
+    private lateinit var databaseReference: DatabaseReference
 //    private lateinit var googleSignInClient: GoogleSignInClient
     private var backPressedTime: Long = 0
 
@@ -33,6 +36,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         auth = FirebaseAuth.getInstance()
+        databaseReference = FirebaseDatabase.getInstance().reference.child("users")
 
         val signInButton: Button = findViewById(R.id.signin_button)
         val signUpButton: Button = findViewById(R.id.signup_page_button)
@@ -110,7 +114,10 @@ class LoginActivity : AppCompatActivity() {
                 if(task.isSuccessful) {
                     // 실제 코드
 //                    moveStartPage(task.result.user)
-
+                    val user: FirebaseUser? = auth.currentUser
+                    user?.let {
+                        getUserData(user.uid)
+                    }
                     // 테스트 코드
                     val roomID = 1000
                     var intent = Intent(this, StartActivity::class.java)
@@ -121,6 +128,24 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+    private fun getUserData(userId: String) {
+        val userRef = databaseReference.child(userId)
+        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    val userId = dataSnapshot.child("UserId").getValue(String::class.java)
+                    val userName = dataSnapshot.child("UserName").getValue(String::class.java)
+                    val userBirth = dataSnapshot.child("UserBirth").getValue(String::class.java)
+                    val user = Users(userId ?: "", userName ?: "", userBirth ?: "")
+                    // 가져온 사용자 데이터를 사용하거나 저장할 수 있습니다.
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e("Firebase Database", "Error: ${databaseError.message}")
+            }
+        })
     }
 
     private fun moveStartPage(user:FirebaseUser?) {
