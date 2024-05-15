@@ -64,9 +64,13 @@ class AlbumFragment : Fragment() {
         Albumlist.add(Album_list("여름휴가"))
         //val name: String=intent.getStringExtra("albumname").toString()
         //val check=intent.getIntExtra("check",0)
-        //if(check==1){
-        //    Albumlist.add(Album_list(name))
-        //}
+        val name=arguments?.getString("albumname").toString()
+        val check=arguments?.getInt("check")
+        //입력값 확인용....안나와ㅠㅠㅠㅠ
+        Log.d("AlbumFragment", "albumname: ${name}, check: $check")
+        if(check==1){
+            Albumlist.add(Album_list(name))
+        }
         _binding?.addAlbum?.setOnClickListener {
             val intent = Intent(activity, AddAlbumActivity::class.java)
             startActivity(intent)
