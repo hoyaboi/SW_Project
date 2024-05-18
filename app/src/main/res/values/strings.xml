@@ -43,5 +43,19 @@
     <string name="tab_schedule">일정</string>
     <string name="tab_profile">프로필</string>
 
+    <!--  개인 프로필/설정  -->
+    <string name="setting">설정</string>
+    <string name="profile_image_set">프로필 이미지 변경</string>
+    <string name="profile_image_set_sub">현재 방에서 사용하는 프로필 이미지를 변경합니다.</string>
+    <string name="personal_set">개인 설정</string>
+    <string name="personal_set_sub">사용자 이름과 생년월일이 참여중인 모든 방에서 변경됩니다.</string>
+    <string name="board_set">게시물 수정</string>
+    <string name="board_set_sub">내가 올린 게시물을 수정합니다.</string>
+    <string name="board_notif_set">새 게시물 알림</string>
+    <string name="board_notif_set_sub">새 게시물이 올라오면 알림이 울립니다.</string>
+    <string name="schedule_notif_set">일정 알림</string>
+    <string name="schedule_notif_set_sub">오늘 일정이 있으면 알림이 울립니다.</string>
+    <string name="signout">로그아웃</string>
+
 
 </resources>

@@ -40,15 +40,10 @@ class BoardFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentBoardBinding.inflate(inflater, container, false)
-        // user email과 room id 로깅
-        Log.d("BoardFragment", "user email: ${userEmail}, room ID: $roomID")
 
-        // 리사이클러 뷰 설정
-        setupRecyclerView()
-        // 게시물 데이터 로드
-        loadMockData()
-        // 멤버 데이터 로드
-        loadMemberData()
+        setupRecyclerView() // 리사이클러 뷰 설정
+        loadMockData()      // 게시물 데이터 로드
+        loadMemberData()    // 멤버 데이터 로드
 
         // '+' 플로팅 버튼 클릭시 게시판 추가 페이지로 이동
         _binding?.addBoard?.setOnClickListener {
