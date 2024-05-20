@@ -81,7 +81,7 @@ class StartActivity : AppCompatActivity() {
                     if (snapshot.exists()) {
                         snapshot.children.forEach { roomSnapshot ->
                             val roomName = roomSnapshot.child("roomName").getValue(String::class.java)
-                            val roomCode = roomSnapshot.key
+                            val roomCode = roomSnapshot.child("roomCode").getValue(String::class.java)
                             if (roomName != null && roomCode != null) {
                                 roomList.add(listItem(roomName, roomCode))
                                 listAdapter.notifyDataSetChanged()

@@ -34,9 +34,10 @@ import java.util.Date
 import java.util.Locale
 import com.google.firebase.database.*
 import com.example.sw_project.models.Post
+import com.google.firebase.auth.FirebaseAuth
 
 class AddBoardActivity : AppCompatActivity() {
-    private var userEmail: String? = null
+    private lateinit var user: FirebaseAuth
     private var roomCode: String? = null
 
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
@@ -60,12 +61,13 @@ class AddBoardActivity : AppCompatActivity() {
         window.statusBarColor = ContextCompat.getColor(this, R.color.lightgrey)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
+        user = FirebaseAuth.getInstance()
+
         setupViews()
         setupPermissions()
         setupImagePickerLauncher()
 
         // 이전 프래그먼트로부터 데이터 받기
-        userEmail = intent.getStringExtra("userEmail")
         roomCode = intent.getStringExtra("roomCode")
 
         // 이미지 추가 버튼 클릭 시
@@ -147,8 +149,8 @@ class AddBoardActivity : AppCompatActivity() {
             }
 
             // Logging for debugging
-            Log.d("AddBoardActivity", "User Email: $uid")
-            Log.d("AddBoardActivity", "Room ID: $roomID")
+            Log.d("AddBoardActivity", "User ID: {${user.currentUser!!.uid}}")
+            Log.d("AddBoardActivity", "Room Code: $roomCode")
             Log.d("AddBoardActivity", "Content: $content")
             Log.d("AddBoardActivity", "Post Time: $postTime")
             imageUri?.let {
@@ -160,8 +162,8 @@ class AddBoardActivity : AppCompatActivity() {
             val postId = databaseReference.child("posts").push().key ?: ""
             val post = Post(
                 postId,
-                uid ?: "",
-                roomID ?: "",
+                user.currentUser!!.uid,
+                roomCode ?: "",
                 content,
                 postTime,
                 imageUri.toString(),
@@ -213,7 +215,7 @@ class AddBoardActivity : AppCompatActivity() {
 
             progressBar.visibility = View.GONE
         }
-    }
+    }*/
 
     private fun saveImageToTempFile(bitmap: Bitmap): Uri {
         // 이미지 파일을 임시 파일로 저장하고 Uri 반환

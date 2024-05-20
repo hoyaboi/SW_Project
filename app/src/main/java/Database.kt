@@ -1,5 +1,7 @@
 package com.example.sw_project.models
 
+import com.google.firebase.auth.FirebaseAuth
+
 data class Room(
     var roomCode: String? = null,
     var roomName: String? = null,

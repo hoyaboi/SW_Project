@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         roomCode = intent.getStringExtra("roomCode")
         roomName = intent.getStringExtra("roomName")
         // user email, room id 로깅
-        Log.d("MainActivity", "user email: ${user?.email}, room ID: $roomCode")
+        Log.d("MainActivity", "user email: ${user?.email}, room Code: $roomCode")
 
         toolBarTitle = findViewById(R.id.toolbar)
         toolBarTitle.title = roomName

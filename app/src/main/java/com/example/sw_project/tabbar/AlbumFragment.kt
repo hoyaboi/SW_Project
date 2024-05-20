@@ -18,7 +18,7 @@ import com.example.sw_project.databinding.FragmentAlbumBinding
 
 class AlbumFragment : Fragment() {
     private var userEmail: String? = null
-    private var roomID: String? = null
+    private var roomCode: String? = null
 
     private var _binding: FragmentAlbumBinding? = null
     private val binding get() = _binding!!
@@ -33,7 +33,7 @@ class AlbumFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             userEmail = it.getString("userEmail")
-            roomID = it.getString("roomID")
+            roomCode = it.getString("roomID")
         }
     }
 
@@ -81,7 +81,7 @@ class AlbumFragment : Fragment() {
 
 
 
-        Log.d("AlbumFragment", "user email: ${userEmail}, room ID: $roomID")
+        Log.d("AlbumFragment", "user email: ${userEmail}, room Code: $roomCode")
         return binding.root
         //return View(requireActivity())
     }
