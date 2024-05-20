@@ -29,10 +29,15 @@ class AddAlbumActivity : AppCompatActivity() {
 
             val editalbumname = findViewById<EditText>(R.id.Albumname)
             val albumname = editalbumname.getText().toString()
+            //테스트용 입력값 fragment로 보내기
             if (albumname.isNotEmpty()) {
-                val intent = Intent(this, AlbumFragment::class.java)
+                /*val intent = Intent(this, AlbumFragment::class.java)
                 intent.putExtra("albumname", albumname)
                 intent.putExtra("check", 1)
+                finish()*/
+                val bundle=Bundle()
+                bundle.putString("albumname",albumname)
+                bundle.putInt("check",1)
                 finish()
             }
         }
