@@ -20,25 +20,30 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sw_project.databinding.ActivityPhotoviewBinding
 import com.example.sw_project.models.com.example.sw_project.adapter.PhotoAdapter
+import com.example.sw_project.models.com.example.sw_project.adapter.listItem
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class PhotoviewActivity : AppCompatActivity() {
-    var list=ArrayList<Uri>()
-    val adapter=PhotoAdapter(list,this)
-    private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
+    lateinit var binding: ActivityPhotoviewBinding
+    lateinit var photoAdapter:PhotoAdapter
+    private lateinit var getResult:ActivityResultLauncher<Intent>
+    //var imagelist: <Uri>
+    var imagelist= arrayListOf<Uri>()
+    //val adapter=PhotoAdapter(list,this)
     private lateinit var imageView: ImageView
-    private lateinit var imageActionsContainer: LinearLayout
-    private lateinit var addImageContainer: LinearLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val albumid =intent.getIntExtra("albumID",0)
         Log.d("PhotoviewActivity",  "album ID: $albumid")
         //enableEdgeToEdge()
-        setContentView(R.layout.activity_photoview)
+        binding=ActivityPhotoviewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         /*ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -46,53 +51,58 @@ class PhotoviewActivity : AppCompatActivity() {
         }*/
         //권한 확인
         setupPermissions()
-        setupImagePickerLauncher()
 
-        var getimage=findViewById<FloatingActionButton>(R.id.add_photo)
-        var recyclerview=findViewById<RecyclerView>(R.id.recyclerview)
+        photoAdapter= PhotoAdapter(imagelist,this)
+        //binding.recyclerview.layoutManager=LinearLayoutManager(this)
+        binding.recyclerview.layoutManager=GridLayoutManager(this,3)
+        //binding.recyclerview.layoutManager=LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
+        binding.recyclerview.adapter=photoAdapter
+        //var getimage=findViewById<FloatingActionButton>(R.id.add_photo)
+        //var recyclerview=findViewById<RecyclerView>(R.id.recyclerview)
 
-        getimage.setOnClickListener {
-            /*var intent=Intent(Intent.ACTION_PICK)
-            intent.data=MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        binding.addPhoto.setOnClickListener {
+            var intent=Intent(Intent.ACTION_PICK)
+            intent.type="image/*"
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
-            intent.action=Intent.ACTION_GET_CONTENT
-
-            startActivity(intent/*,200*/)*/
-            imagePickerLauncher.launch("image/*")
+            getResult.launch(intent)
         }
-        val layoutManager=LinearLayoutManager(this)
-        recyclerview.layoutManager=layoutManager
-        recyclerview.adapter=adapter
+
+        getResult=registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            if(it.resultCode== RESULT_OK){
+                if(it.data!!.clipData!=null){
+                    val count=it.data!!.clipData!!.itemCount
+                    for(index in 0 until count){
+                        val imageUri=it.data!!.clipData!!.getItemAt(index).uri
+
+                        // imageUri이 사진 정보
+                        imagelist.add(imageUri)
+                    }
+                }
+                else{
+                    val imageUri=it.data!!.data
+                    imagelist.add(imageUri!!)
+                }
+                photoAdapter.notifyDataSetChanged()
+            }
+        }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if(resultCode== RESULT_OK/*&&requestCode==200*/){
-            list.clear()
-
-            if(data?.clipData!=null){
-                val count=data.clipData!!.itemCount
-                if(count>20){
-                    Toast.makeText(applicationContext,"사진은 20장까지 선택 가능합닌다.",Toast.LENGTH_LONG)
-                    return
-                }
-                for(i in 0 until count){
-                    val imageUri=data.clipData!!.getItemAt(i).uri
-                    list.add(imageUri)
+    /*ActivityResultContracts.StartActivityForResult()){
+        if(it.resultCode== RESULT_OK){
+            if(it.data!!.clipData!=null) {
+                val count = it.data!!.clipData!!.itemCount
+                for(index in 0 until count){
+                    val imageUri=it.data!!.clipData!!.getItemAt(index).uri
+                    imagelist.add(imageUri)
                 }
             }
             else{
-                data?.data?.let { uri ->
-                    val imageUri: Uri?=data?.data
-                    if(imageUri!=null){
-                        list.add(imageUri)
-                    }
-                }
+                val imageUri=it.data!!.data
+                imagelist.add(imageUri!!)
             }
-            adapter.notifyDataSetChanged()
+            photoAdapter.notifyDataSetChanged()
         }
-    }
+    }*/
 
     private fun setupPermissions() {
         if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -108,14 +118,6 @@ class PhotoviewActivity : AppCompatActivity() {
             }
         }
     }
-    private fun setupImagePickerLauncher() {
-        imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-            uri?.let {
-                imageView.setImageURI(uri)
-                imageActionsContainer.visibility = View.VISIBLE
-                addImageContainer.visibility = View.GONE
-            }
-        }
-    }
+
 
 }

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sw_project.AddAlbumActivity
 import com.example.sw_project.models.com.example.sw_project.adapter.Album_Adapter
@@ -49,7 +50,8 @@ class AlbumFragment : Fragment() {
 
         //setContentView(view)
 
-        binding.recyclerview.layoutManager=LinearLayoutManager(this.activity,LinearLayoutManager.HORIZONTAL,false)
+        //binding.recyclerview.layoutManager=LinearLayoutManager(this.activity,LinearLayoutManager.HORIZONTAL,false)
+        binding.recyclerview.layoutManager=GridLayoutManager(this.activity,2)
         binding.recyclerview.adapter=Albumadapter
 //앨범 클릭시 앨범 index를 넘겨주며 사진 목록 화면으로 넘어감
         Albumadapter.setItemClickListener(object: Album_Adapter.OnItemClickListener{

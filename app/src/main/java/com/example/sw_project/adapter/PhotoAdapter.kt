@@ -14,27 +14,29 @@ import com.bumptech.glide.Glide
 import com.example.sw_project.R
 
 
-class PhotoAdapter(private val items:ArrayList<Uri>, val context: Context):
-    RecyclerView.Adapter<PhotoAdapter.ViewHolder>() {
+class PhotoAdapter():RecyclerView.Adapter<PhotoAdapter.ViewHolder>(){
+    lateinit var imagelist:ArrayList<Uri>
+    lateinit var context: Context
 
-    override fun getItemCount(): Int =items.size
+    constructor(imagelist:ArrayList<Uri>,context: Context):this(){
+        this.imagelist=imagelist
+        this.context=context
+    }
+    override fun getItemCount(): Int {
+        return imagelist.size
+    }
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item=items[position]
-        Glide.with(context).load(item)
-            .override(500,500)
-            .into(holder.image)
+        Glide.with(context)
+            .load(imagelist[position])
+            .into(holder.imageView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val inflatedView=LayoutInflater.from(parent.context).inflate(R.layout.item_photo,parent,false)
-        return ViewHolder(inflatedView)
+        val inflater:LayoutInflater=LayoutInflater.from(parent.context)
+        val view:View=inflater.inflate(R.layout.item_photo,parent,false)
+        return ViewHolder(view)
     }
     class ViewHolder(v:View):RecyclerView.ViewHolder(v){
-        private var view:View=v
-        var image=v.findViewById<ImageView>(R.id.imageView)
-
-        fun bind(listener:View.OnClickListener,item:String){
-            view.setOnClickListener(listener)
-        }
+        val imageView: ImageView=v.findViewById(R.id.imageView)
     }
 }
