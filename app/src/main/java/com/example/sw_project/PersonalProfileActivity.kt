@@ -12,7 +12,7 @@ import androidx.core.view.WindowInsetsCompat
 
 class PersonalProfileActivity : AppCompatActivity() {
     private var memberName: String? = null
-    private var roomID: String? = null
+    private var roomCode: String? = null
 
     private lateinit var profileNameText: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,8 +24,8 @@ class PersonalProfileActivity : AppCompatActivity() {
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         memberName = intent.getStringExtra("memberName")
-        roomID = intent.getStringExtra("roomID")
-        Log.d("PersonalProfileActivity", "name: $memberName, room ID: $roomID")
+        roomCode = intent.getStringExtra("roomCode")
+        Log.d("PersonalProfileActivity", "name: $memberName, room ID: $roomCode")
 
         setupView()
         setupListeners()

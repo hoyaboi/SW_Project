@@ -22,7 +22,7 @@ import com.google.firebase.database.FirebaseDatabase
 
 class ProfileImageSettingActivity : AppCompatActivity() {
     private var profileUri: String? = null
-    private var roomID: String? = null
+    private var roomCode: String? = null
 
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
@@ -41,7 +41,7 @@ class ProfileImageSettingActivity : AppCompatActivity() {
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         profileUri = intent.getStringExtra("profileUri") ?: return
-        roomID = intent.getStringExtra("roomID") ?: return
+        roomCode = intent.getStringExtra("roomCode") ?: return
 
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
@@ -106,7 +106,7 @@ class ProfileImageSettingActivity : AppCompatActivity() {
 
         changeButton.setOnClickListener {
             // 프로필 이미지를 firebase storage에 저장 후, 데이터베이스에 uri 저장
-            // 데이터베이스 rooms의 현재 roomID와 일치하는 participants의 profileUri 수정
+            // 데이터베이스 rooms의 현재 roomCode와 일치하는 participants의 profileUri 수정
 
             finish()
         }

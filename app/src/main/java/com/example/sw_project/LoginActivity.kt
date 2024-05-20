@@ -113,16 +113,13 @@ class LoginActivity : AppCompatActivity() {
         if(id.isNotEmpty() && pwd.isNotEmpty()) {
             auth.signInWithEmailAndPassword(id, pwd).addOnCompleteListener(this) { task ->
                 if(task.isSuccessful) {
-                    // 실제 코드
 //                    moveStartPage(task.result.user)
                     val user: FirebaseUser? = auth.currentUser
                     user?.let {
                         getUserData(user.uid)
                     }
-                    // 테스트 코드
-                    val roomID = 1000
+
                     var intent = Intent(this, StartActivity::class.java)
-                    intent.putExtra("roomID", roomID)
                     startActivity(intent)
                 } else {
                     Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG).show()

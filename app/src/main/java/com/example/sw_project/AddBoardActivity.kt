@@ -35,7 +35,7 @@ import java.util.Locale
 
 class AddBoardActivity : AppCompatActivity() {
     private var userEmail: String? = null
-    private var roomID: String? = null
+    private var roomCode: String? = null
 
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
     private lateinit var imageView: ImageView
@@ -64,7 +64,7 @@ class AddBoardActivity : AppCompatActivity() {
 
         // 이전 프래그먼트로부터 데이터 받기
         userEmail = intent.getStringExtra("userEmail")
-        roomID = intent.getStringExtra("roomID")
+        roomCode = intent.getStringExtra("roomCode")
 
         // 이미지 추가 버튼 클릭 시
         addImageButton.setOnClickListener {
@@ -146,14 +146,14 @@ class AddBoardActivity : AppCompatActivity() {
 
             // Logging for debugging
             Log.d("AddBoardActivity", "User Email: $userEmail")
-            Log.d("AddBoardActivity", "Room ID: $roomID")
+            Log.d("AddBoardActivity", "Room ID: $roomCode")
             Log.d("AddBoardActivity", "Content: $content")
             Log.d("AddBoardActivity", "Post Time: $postTime")
             imageUri?.let {
                 Log.d("AddBoardActivity", "Image URI: $it")
             } ?: Log.d("AddBoardActivity", "No Image selected")
 
-            // firebase 데이터베이스에 userEmail, roomID, 이미지, 게시글, 작성시간 저장하는 코드 작성하시면 됩니다.
+            // firebase 데이터베이스에 userEmail, roomCode, 이미지, 게시글, 작성시간 저장하는 코드 작성하시면 됩니다.
             // 1. firebase storage에 이미지 업로드
             // 2. 이미지가 성공적으로 업로드 되면, 이미지 URL과 게시글 데이터 firebase realtime database에 저장
 

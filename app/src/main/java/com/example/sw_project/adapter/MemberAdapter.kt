@@ -19,10 +19,10 @@ data class MemberItem(
 )
 
 // MemberAdapter 구현
-class MemberAdapter(private val roomID: String?) : RecyclerView.Adapter<MemberAdapter.MemberViewHolder>() {
+class MemberAdapter(private val roomCode: String?) : RecyclerView.Adapter<MemberAdapter.MemberViewHolder>() {
     private var members: List<MemberItem> = listOf()
 
-    class MemberViewHolder(view: View, private val roomID: String?) : RecyclerView.ViewHolder(view) {
+    class MemberViewHolder(view: View, private val roomCode: String?) : RecyclerView.ViewHolder(view) {
         private val profileImageView: ImageView = view.findViewById(R.id.profile_image)
         private val memberNameText: TextView = view.findViewById(R.id.member_name)
         private val memberContainer: LinearLayout = view.findViewById(R.id.member_container)
@@ -44,7 +44,7 @@ class MemberAdapter(private val roomID: String?) : RecyclerView.Adapter<MemberAd
                 val context = itemView.context
                 val intent = Intent(context, PersonalProfileActivity::class.java)
                 intent.putExtra("memberName", member.memberName)
-                intent.putExtra("roomID", roomID)
+                intent.putExtra("roomCode", roomCode)
                 context.startActivity(intent)
             }
         }
@@ -52,7 +52,7 @@ class MemberAdapter(private val roomID: String?) : RecyclerView.Adapter<MemberAd
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemberViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_member, parent, false)
-        return MemberViewHolder(view, roomID)
+        return MemberViewHolder(view, roomCode)
     }
 
     override fun onBindViewHolder(holder: MemberViewHolder, position: Int) {

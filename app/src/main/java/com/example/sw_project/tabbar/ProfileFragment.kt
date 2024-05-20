@@ -29,7 +29,7 @@ import java.util.Locale
 
 class ProfileFragment : Fragment() {
     private var userEmail: String? = null
-    private var roomID: String? = null
+    private var roomCode: String? = null
     private var name: String? = null
     private var birthDate: String? = null
     private var profileUri: String? = null
@@ -43,7 +43,7 @@ class ProfileFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             userEmail = it.getString("userEmail")
-            roomID = it.getString("roomID")
+            roomCode = it.getString("roomCode")
         }
     }
 
@@ -95,7 +95,7 @@ class ProfileFragment : Fragment() {
         database.child("users").child(auth.uid!!).addValueEventListener(userProfileListener!!)
 
         // 프로필 이미지 URI 불러오기
-        database.child("rooms").child(roomID!!).child("participants").child(auth.uid!!).child("profileUri")
+        database.child("rooms").child(roomCode!!).child("participants").child(auth.uid!!).child("profileUri")
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     profileUri = snapshot.getValue(String::class.java) ?: ""
@@ -113,7 +113,7 @@ class ProfileFragment : Fragment() {
     private fun profileImageSetting() {
         binding.profileImageSettingConatainer.setOnClickListener {
             val intent = Intent(requireContext(), ProfileImageSettingActivity::class.java)
-            intent.putExtra("roomID", roomID)
+            intent.putExtra("roomCode", roomCode)
             intent.putExtra("profileUri", profileUri)
             startActivity(intent)
         }
@@ -131,7 +131,7 @@ class ProfileFragment : Fragment() {
     private fun boardSetting() {
         binding.boardSettingConatainer.setOnClickListener {
             val intent = Intent(requireContext(), BoardSettingActivity::class.java)
-            intent.putExtra("roomID", roomID)
+            intent.putExtra("roomCode", roomCode)
             startActivity(intent)
         }
     }
@@ -162,11 +162,11 @@ class ProfileFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(userEmail: String?, roomID: String?) =
+        fun newInstance(userEmail: String?, roomCode: String?) =
             ProfileFragment().apply {
                 arguments = Bundle().apply {
                     putString("userEmail", userEmail)
-                    putString("roomID", roomID)
+                    putString("roomCode", roomCode)
                 }
             }
     }

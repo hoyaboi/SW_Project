@@ -24,7 +24,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
     private var user = FirebaseAuth.getInstance().currentUser
-    private var roomID: String? = null
+    private var roomCode: String? = null
     private var roomName: String? = null
     private var backPressedTime: Long = 0
     private lateinit var toolBarTitle: MaterialToolbar
@@ -37,10 +37,10 @@ class MainActivity : AppCompatActivity() {
         window.statusBarColor = ContextCompat.getColor(this, R.color.lightgrey)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
-        roomID = intent.getStringExtra("roomID")
+        roomCode = intent.getStringExtra("roomCode")
         roomName = intent.getStringExtra("roomName")
         // user email, room id 로깅
-        Log.d("MainActivity", "user email: ${user?.email}, room ID: $roomID")
+        Log.d("MainActivity", "user email: ${user?.email}, room ID: $roomCode")
 
         toolBarTitle = findViewById(R.id.toolbar)
         toolBarTitle.title = roomName
@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-        viewPager.adapter = ViewPagerAdapter(this, user, roomID)
+        viewPager.adapter = ViewPagerAdapter(this, user, roomCode)
         viewPager.isUserInputEnabled = false
 
         // TabLayout과 ViewPager2 연동

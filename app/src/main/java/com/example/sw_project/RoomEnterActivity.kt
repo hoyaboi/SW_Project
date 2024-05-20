@@ -40,9 +40,9 @@ class RoomEnterActivity : AppCompatActivity() {
             val editRoomName = findViewById<EditText>(R.id.Roomname)
             val editRoomCode = findViewById<EditText>(R.id.Roomcode)
             val roomName = editRoomName.getText().toString()
-            val roomID = editRoomCode.getText().toString()
-            if (roomName.isNotEmpty() && roomID.isNotEmpty()) {
-                enterRoom(roomName, roomID)
+            val roomCode = editRoomCode.getText().toString()
+            if (roomName.isNotEmpty() && roomCode.isNotEmpty()) {
+                enterRoom(roomName, roomCode)
             } else {
                 Toast.makeText(this, "방 이름과 코드를 입력하세요.", Toast.LENGTH_SHORT).show()
             }
@@ -50,7 +50,7 @@ class RoomEnterActivity : AppCompatActivity() {
         }
     }
 
-    private fun enterRoom(roomName: String, roomID: String) {
+    private fun enterRoom(roomName: String, roomCode: String) {
         val query: Query = databaseReference.child("rooms").orderByChild("roomName").equalTo(roomName)
 
         query.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -59,9 +59,9 @@ class RoomEnterActivity : AppCompatActivity() {
                     // 방이 존재하는 경우
                     for (snapshot in dataSnapshot.children) {
                         val room = snapshot.getValue(Room::class.java)
-                        if (room?.roomID == roomID) { // 입력한 코드가 일치하는 경우
+                        if (room?.roomCode == roomCode) { // 입력한 코드가 일치하는 경우
                             // 참가자 추가(이미 존재하면 경고 메시지)
-                            addParticipants(roomName, roomID)
+                            addParticipants(roomName, roomCode)
                             return
                         }
                     }
@@ -81,7 +81,7 @@ class RoomEnterActivity : AppCompatActivity() {
         })
     }
 
-    private fun addParticipants(roomName: String, roomID: String) {
+    private fun addParticipants(roomName: String, roomCode: String) {
         val query: Query = databaseReference.child("rooms").orderByChild("roomName").equalTo(roomName)
 
         query.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -89,7 +89,7 @@ class RoomEnterActivity : AppCompatActivity() {
                 var roomFound = false
                 for (snapshot in dataSnapshot.children) {
                     val room = snapshot.getValue(Room::class.java)
-                    if (room != null && room.roomID == roomID) {
+                    if (room != null && room.roomCode == roomCode) {
                         roomFound = true
                         val participantsRef = snapshot.child("participants").ref
                         val userID = auth.currentUser!!.uid
@@ -100,7 +100,7 @@ class RoomEnterActivity : AppCompatActivity() {
                                     // 참가자 목록에 사용자가 없는 경우, 참가자 추가
                                     participantsRef.child(userID).setValue(mapOf("uID" to userID, "profileUri" to "")).addOnSuccessListener {
                                         Log.d("RoomEnterActivity", "Participant added successfully.")
-                                        navigateToRoom(room.roomID, room.roomName)
+                                        navigateToRoom(room.roomCode, room.roomName)
                                     }.addOnFailureListener { exception ->
                                         Log.e("RoomEnterActivity", "Failed to add participant", exception)
                                     }
@@ -128,9 +128,9 @@ class RoomEnterActivity : AppCompatActivity() {
         })
     }
 
-    private fun navigateToRoom(roomID: String?, roomName: String?) {
+    private fun navigateToRoom(roomCode: String?, roomName: String?) {
         val intent = Intent(this@RoomEnterActivity, MainActivity::class.java)
-        intent.putExtra("roomID", roomID)
+        intent.putExtra("roomCode", roomCode)
         intent.putExtra("roomName", roomName)
         startActivity(intent)
         finish()

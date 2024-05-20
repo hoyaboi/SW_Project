@@ -23,7 +23,7 @@ import java.util.Locale
 
 // 데이터 클래스 정의
 data class BoardItem(
-    val roomID: String,
+    val roomCode: String,
     val boardID: String,
     val profileImageUrl : String,
     val memberName: String,
@@ -45,11 +45,11 @@ class BoardDiffCallback : DiffUtil.ItemCallback<BoardItem>() {
 }
 
 // BoardAdapter 구현
-class BoardAdapter(private val roomID: String?) : ListAdapter<BoardItem, BoardAdapter.BoardViewHolder>(
+class BoardAdapter(private val roomCode: String?) : ListAdapter<BoardItem, BoardAdapter.BoardViewHolder>(
     BoardDiffCallback()
 ) {
     @SuppressLint("ClickableViewAccessibility")
-    class BoardViewHolder(itemView: View, private val roomID: String?, private val adapter: BoardAdapter) : RecyclerView.ViewHolder(itemView) {
+    class BoardViewHolder(itemView: View, private val roomCode: String?, private val adapter: BoardAdapter) : RecyclerView.ViewHolder(itemView) {
         private val profileContainer: LinearLayout = itemView.findViewById(R.id.profile_container)
         private val profileImageView: ImageView = itemView.findViewById(R.id.profile_image)
         private val memberNameText: TextView = itemView.findViewById(R.id.member_name)
@@ -80,7 +80,7 @@ class BoardAdapter(private val roomID: String?) : ListAdapter<BoardItem, BoardAd
                 val context = itemView.context
                 val intent = Intent(context, PersonalProfileActivity::class.java)
                 intent.putExtra("memberName", item.memberName)
-                intent.putExtra("roomID", roomID)
+                intent.putExtra("roomCode", roomCode)
                 context.startActivity(intent)
             }
 
@@ -126,7 +126,7 @@ class BoardAdapter(private val roomID: String?) : ListAdapter<BoardItem, BoardAd
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoardViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_board, parent, false)
-        return BoardViewHolder(view, roomID, this)
+        return BoardViewHolder(view, roomCode, this)
     }
 
     override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {

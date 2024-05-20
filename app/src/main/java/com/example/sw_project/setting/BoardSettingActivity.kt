@@ -25,7 +25,7 @@ class BoardSettingActivity : AppCompatActivity() {
         window.statusBarColor = ContextCompat.getColor(this, R.color.lightgrey)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
-        val roomID = intent.getStringExtra("roomID") ?: return
+        val roomCode = intent.getStringExtra("roomCode") ?: return
 
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference

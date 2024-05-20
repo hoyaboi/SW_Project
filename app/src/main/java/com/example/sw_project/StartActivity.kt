@@ -61,7 +61,7 @@ class StartActivity : AppCompatActivity() {
         listAdapter.setItemClickListener(object : Adapter.OnItemClickListener {
             override fun onClick(v: View, position: Int) {
                 val intent = Intent(this@StartActivity, MainActivity::class.java)
-                intent.putExtra("roomID", roomList[position].id)
+                intent.putExtra("roomCode", roomList[position].id)
                 intent.putExtra("roomName", roomList[position].name)
                 startActivity(intent)
             }
@@ -80,9 +80,9 @@ class StartActivity : AppCompatActivity() {
                     if (snapshot.exists()) {
                         snapshot.children.forEach { roomSnapshot ->
                             val roomName = roomSnapshot.child("roomName").getValue(String::class.java)
-                            val roomID = roomSnapshot.key
-                            if (roomName != null && roomID != null) {
-                                roomList.add(listItem(roomName, roomID))
+                            val roomCode = roomSnapshot.key
+                            if (roomName != null && roomCode != null) {
+                                roomList.add(listItem(roomName, roomCode))
                                 listAdapter.notifyDataSetChanged()
                             }
                         }

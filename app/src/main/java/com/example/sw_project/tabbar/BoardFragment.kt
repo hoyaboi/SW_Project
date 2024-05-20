@@ -21,7 +21,7 @@ import java.util.Locale
 
 class BoardFragment : Fragment() {
     private var userEmail: String? = null
-    private var roomID: String? = null
+    private var roomCode: String? = null
     private var _binding: FragmentBoardBinding? = null
     private val binding get() = _binding!!
     private lateinit var boardAdapter: BoardAdapter
@@ -31,7 +31,7 @@ class BoardFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             userEmail = it.getString("userEmail")
-            roomID = it.getString("roomID")
+            roomCode = it.getString("roomCode")
         }
     }
 
@@ -55,12 +55,12 @@ class BoardFragment : Fragment() {
 
     private fun setupRecyclerView() {
         // 게시물 리사이클러 뷰
-        boardAdapter = BoardAdapter(roomID)
+        boardAdapter = BoardAdapter(roomCode)
         binding.boardsRecyclerView.adapter = boardAdapter
         binding.boardsRecyclerView.layoutManager = LinearLayoutManager(context)
 
         // 멤버 리사이클러 뷰
-        memberAdapter = MemberAdapter(roomID)
+        memberAdapter = MemberAdapter(roomCode)
         binding.memberRecyclerView.adapter = memberAdapter
         binding.memberRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
@@ -100,7 +100,7 @@ class BoardFragment : Fragment() {
             // 현재는 임시 데이터로 작성했습니다.
             // 공감 카운트 증가를 위한 DB 업데이트 코드는 ListAdapter.kt에서(103 line) 작성하시면 됩니다.
             BoardItem(
-                roomID = "$roomID",
+                roomCode = "$roomCode",
                 boardID = "1",
                 profileImageUrl = "",
                 memberName = "Member 1",
@@ -110,7 +110,7 @@ class BoardFragment : Fragment() {
                 dateText = "2024년 05월 05일 14:20:20"
             ),
             BoardItem(
-                roomID = "$roomID",
+                roomCode = "$roomCode",
                 boardID = "2",
                 profileImageUrl = "",
                 memberName = "Member 2",
@@ -120,7 +120,7 @@ class BoardFragment : Fragment() {
                 dateText = "2024년 05월 04일 13:15:20"
             ),
             BoardItem(
-                roomID = "$roomID",
+                roomCode = "$roomCode",
                 boardID = "3",
                 profileImageUrl = "",
                 memberName = "Member 3",
@@ -130,7 +130,7 @@ class BoardFragment : Fragment() {
                 dateText = "2024년 05월 04일 13:15:25"
             ),
             BoardItem(
-                roomID = "$roomID",
+                roomCode = "$roomCode",
                 boardID = "4",
                 profileImageUrl = "https://images.unsplash.com/photo-1715769274428-6a833e1ad625?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                 memberName = "Member 4",
@@ -147,7 +147,7 @@ class BoardFragment : Fragment() {
     private fun navigateToAddBoardActivity() {
         val intent = Intent(activity, AddBoardActivity::class.java).apply {
             putExtra("userEmail", userEmail)
-            putExtra("roomID", roomID)
+            putExtra("roomCode", roomCode)
         }
         startActivity(intent)
     }
@@ -159,11 +159,11 @@ class BoardFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(userEmail: String?, roomID: String?) =
+        fun newInstance(userEmail: String?, roomCode: String?) =
             BoardFragment().apply {
                 arguments = Bundle().apply {
                     putString("userEmail", userEmail)
-                    putString("roomID", roomID)
+                    putString("roomCode", roomCode)
                 }
             }
     }

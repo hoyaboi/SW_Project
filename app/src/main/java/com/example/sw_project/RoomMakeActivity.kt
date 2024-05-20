@@ -50,10 +50,10 @@ class RoomMakeActivity : AppCompatActivity() {
             val editRoomName=findViewById<EditText>(R.id.Roomname)
             val editRoomCode=findViewById<EditText>(R.id.Roomcode)
             val roomName=editRoomName.getText().toString()
-            val roomID=editRoomCode.getText().toString()
-            if(roomName.isNotEmpty() && roomID.isNotEmpty()){
+            val roomCode=editRoomCode.getText().toString()
+            if(roomName.isNotEmpty() && roomCode.isNotEmpty()){
                 //이름과 코드가 같은 방이 없을 경우 방 생성
-                saveRoomToDatabase(roomName, roomID)
+                saveRoomToDatabase(roomName, roomCode)
             }
             else {
                 Toast.makeText(this, "방 이름과 코드를 입력하세요.", Toast.LENGTH_SHORT).show()
@@ -61,7 +61,7 @@ class RoomMakeActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveRoomToDatabase(roomName: String, roomID: String) {
+    private fun saveRoomToDatabase(roomName: String, roomCode: String) {
         val userUID = auth.currentUser!!.uid // 사용자 UID
         val participantDetails = hashMapOf(
             "uID" to userUID,
@@ -71,13 +71,13 @@ class RoomMakeActivity : AppCompatActivity() {
             userUID to participantDetails
         )
         val roomData = Room(
-            roomID = roomID,
+            roomCode = roomCode,
             roomName = roomName,
             participants = participants
         )
 
-        // 방 이름과 ID로 데이터베이스를 검색
-        val roomsQuery = databaseReference.child("rooms").orderByChild("roomName").equalTo(roomName)
+        // 방 이름과 Code로 데이터베이스를 검색
+        val roomsQuery = databaseReference.child("rooms").orderByChild("roomCode").equalTo(roomCode)
 
         roomsQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -87,9 +87,9 @@ class RoomMakeActivity : AppCompatActivity() {
                 } else {
                     databaseReference.child("rooms").push().setValue(roomData)
                         .addOnSuccessListener {
-                            Log.d("Room make success", "Room_Name: $roomName, Room_Code: $roomID")
+                            Log.d("Room make success", "Room_Name: $roomName, Room_Code: $roomCode")
                             val intent = Intent(this@RoomMakeActivity, MainActivity::class.java)
-                            intent.putExtra("roomID", roomID)
+                            intent.putExtra("roomCode", roomCode)
                             intent.putExtra("roomName", roomName)
                             startActivity(intent)
                             finish()

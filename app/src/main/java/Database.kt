@@ -1,7 +1,7 @@
 package com.example.sw_project.models
 
 data class Room(
-    var roomID: String? = null,
+    var roomCode: String? = null,
     var roomName: String? = null,
     var participants: HashMap<String, HashMap<String, String>> = HashMap()
 )
