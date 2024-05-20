@@ -53,6 +53,7 @@ class StartActivity : AppCompatActivity() {
         binding.makebutton.setOnClickListener {
             val intent = Intent(this, RoomMakeActivity::class.java)
             startActivity(intent)
+
         }
         binding.enterbutton.setOnClickListener {
             val intent = Intent(this, RoomEnterActivity::class.java)

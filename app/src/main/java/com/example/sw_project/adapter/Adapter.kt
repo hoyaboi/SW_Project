@@ -40,5 +40,4 @@ class Adapter(val Roomlist:ArrayList<listItem>) : RecyclerView.Adapter<Adapter.R
         return Roomlist.size
     }
 
-
 }

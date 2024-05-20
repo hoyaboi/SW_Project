@@ -32,6 +32,8 @@ import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import com.google.firebase.database.*
+import com.example.sw_project.models.Post
 
 class AddBoardActivity : AppCompatActivity() {
     private var userEmail: String? = null
@@ -145,15 +147,65 @@ class AddBoardActivity : AppCompatActivity() {
             }
 
             // Logging for debugging
-            Log.d("AddBoardActivity", "User Email: $userEmail")
-            Log.d("AddBoardActivity", "Room ID: $roomCode")
+            Log.d("AddBoardActivity", "User Email: $uid")
+            Log.d("AddBoardActivity", "Room ID: $roomID")
             Log.d("AddBoardActivity", "Content: $content")
             Log.d("AddBoardActivity", "Post Time: $postTime")
             imageUri?.let {
                 Log.d("AddBoardActivity", "Image URI: $it")
             } ?: Log.d("AddBoardActivity", "No Image selected")
 
-            // firebase 데이터베이스에 userEmail, roomCode, 이미지, 게시글, 작성시간 저장하는 코드 작성하시면 됩니다.
+            // Firebase Realtime Database에 데이터 저장
+            val databaseReference = FirebaseDatabase.getInstance().reference
+            val postId = databaseReference.child("posts").push().key ?: ""
+            val post = Post(
+                postId,
+                uid ?: "",
+                roomID ?: "",
+                content,
+                postTime,
+                imageUri.toString(),
+                0 // 초기 likeCount는 0으로 설정
+            )
+
+            databaseReference.child("posts").child(postId).setValue(post)
+                .addOnSuccessListener {
+                    Log.d("AddBoardActivity", "Post saved successfully")
+                    Toast.makeText(this@AddBoardActivity, "게시물이 성공적으로 등록되었습니다.", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("AddBoardActivity", "Error saving post", exception)
+                    Toast.makeText(this@AddBoardActivity, "게시물 등록에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                }
+
+            progressBar.visibility = View.GONE
+        }
+    }
+    /*private fun post() {
+        progressBar.visibility = View.VISIBLE
+
+        coroutineScope.launch {
+            // 게시글 내용과 작성 시간 가져오기
+            val content = contentEditText.text.toString().trim()
+            val currentTime = System.currentTimeMillis()
+            val dateFormatter = SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss", Locale.getDefault())
+            val postTime = dateFormatter.format(Date(currentTime))
+
+            // 이미지 URI 가져오기
+            val imageUri: Uri? = (imageView.drawable as? BitmapDrawable)?.bitmap?.let { bitmap ->
+                saveImageToTempFile(bitmap)
+            }
+
+            // Logging for debugging
+            Log.d("AddBoardActivity", "User Email: $userEmail")
+            Log.d("AddBoardActivity", "Room ID: $roomID")
+            Log.d("AddBoardActivity", "Content: $content")
+            Log.d("AddBoardActivity", "Post Time: $postTime")
+            imageUri?.let {
+                Log.d("AddBoardActivity", "Image URI: $it")
+            } ?: Log.d("AddBoardActivity", "No Image selected")
+
+            // firebase 데이터베이스에 userEmail, roomID, 이미지, 게시글, 작성시간 저장하는 코드 작성하시면 됩니다.
             // 1. firebase storage에 이미지 업로드
             // 2. 이미지가 성공적으로 업로드 되면, 이미지 URL과 게시글 데이터 firebase realtime database에 저장
 
