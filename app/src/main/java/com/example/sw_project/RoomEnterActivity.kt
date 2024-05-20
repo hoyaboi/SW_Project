@@ -66,10 +66,10 @@ class RoomEnterActivity : AppCompatActivity() {
                         }
                     }
                     // 일치하는 코드가 없는 경우
-                    Toast.makeText(this@RoomEnterActivity, "잘못된 코드입니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@RoomEnterActivity, "존재하지 않는 방입니다.", Toast.LENGTH_SHORT).show()
                 } else {
                     // 해당하는 이름의 방이 없는 경우
-                    Toast.makeText(this@RoomEnterActivity, "존재하지 않는 방 이름입니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@RoomEnterActivity, "존재하지 않는 방입니다.", Toast.LENGTH_SHORT).show()
                 }
             }
 

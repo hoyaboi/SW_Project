@@ -85,7 +85,7 @@ class RoomMakeActivity : AppCompatActivity() {
                     // 이미 방이 존재하는 경우
                     Toast.makeText(this@RoomMakeActivity, "이미 존재하는 방 코드입니다.", Toast.LENGTH_SHORT).show()
                 } else {
-                    databaseReference.child("rooms").push().setValue(roomData)
+                    databaseReference.child("rooms").child(roomCode).setValue(roomData)
                         .addOnSuccessListener {
                             Log.d("Room make success", "Room_Name: $roomName, Room_Code: $roomCode")
                             val intent = Intent(this@RoomMakeActivity, MainActivity::class.java)
