@@ -12,9 +12,81 @@ import com.example.sw_project.databinding.ActivityStartBinding
 import com.example.sw_project.models.com.example.sw_project.adapter.Adapter
 import com.example.sw_project.models.com.example.sw_project.adapter.listItem
 import com.google.firebase.auth.FirebaseAuth
-
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import androidx.recyclerview.widget.RecyclerView
+import android.widget.Toast
+import com.example.sw_project.models.Room
 
 class StartActivity : AppCompatActivity() {
+    private var user = FirebaseAuth.getInstance().currentUser
+    private lateinit var binding: ActivityStartBinding
+    private lateinit var roomList: ArrayList<listItem>
+    private lateinit var listAdapter: Adapter
+    private lateinit var databaseReference: DatabaseReference
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityStartBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // 상태표시줄 색상 변경
+        window.statusBarColor = ContextCompat.getColor(this, R.color.lightgrey)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+        // Firebase 데이터베이스의 "rooms" 레퍼런스 가져오기
+        databaseReference = FirebaseDatabase.getInstance().reference.child("rooms")
+
+        // RecyclerView 설정
+        roomList = ArrayList()
+        listAdapter = Adapter(roomList)
+        binding.recyclerview.layoutManager = LinearLayoutManager(this)
+        binding.recyclerview.adapter = listAdapter
+
+        // Firebase Realtime Database에서 방 목록 가져오기
+        databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // dataSnapshot에서 데이터 가져와서 roomList에 추가
+                for (snapshot in dataSnapshot.children) {
+                    val name = snapshot.child("roomName").getValue(String::class.java)
+                    val code = snapshot.child("roomCode").getValue(String::class.java)
+                    if (name != null && code != null) {
+                        roomList.add(listItem(name, code))
+                    }
+                }
+                // RecyclerView 갱신
+                listAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // 에러 처리
+                Log.e("StartActivity", "Error fetching room list: $databaseError")
+            }
+        })
+
+        // 버튼 클릭 리스너 등록
+        binding.makebutton.setOnClickListener {
+            startActivity(Intent(this, RoomMakeActivity::class.java))
+        }
+        binding.enterbutton.setOnClickListener {
+            startActivity(Intent(this, RoomEnterActivity::class.java))
+        }
+
+        // RecyclerView 아이템 클릭 리스너 등록
+        listAdapter.setItemClickListener(object : Adapter.OnItemClickListener {
+            override fun onClick(v: View, position: Int) {
+                val intent = Intent(this@StartActivity, MainActivity::class.java)
+                intent.putExtra("roomID", roomList[position].code)
+                intent.putExtra("roomName", roomList[position].name)
+                startActivity(intent)
+            }
+        })
+    }
+}
+/*class StartActivity : AppCompatActivity() {
     private var user = FirebaseAuth.getInstance().currentUser
     private lateinit var binding:ActivityStartBinding
     val Roomlist= arrayListOf<listItem>()
@@ -77,4 +149,4 @@ class StartActivity : AppCompatActivity() {
             Roomlist.add(listItem(name, code))
         }
     }
-}
+}*/

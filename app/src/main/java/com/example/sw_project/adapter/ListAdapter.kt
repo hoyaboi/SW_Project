@@ -20,6 +20,7 @@ import com.example.sw_project.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import com.google.firebase.database.*
 
 // 데이터 클래스 정의
 data class BoardItem(
@@ -114,6 +115,49 @@ class BoardAdapter(private val roomID: String?) : ListAdapter<BoardItem, BoardAd
                     currentItem.likeCount += 1  // likeCount를 1 증가
                     Log.d("BoardAdapter", "Double tapped, like count updated: ${currentItem.likeCount}")
                     adapter.notifyItemChanged(position)  // 해당 포지션의 아이템을 업데이트
+
+                    // Firebase Realtime Database에서 해당 게시물의 좋아요 카운트 가져오기
+                    val postId = currentItem.boardID
+                    val databaseReference = FirebaseDatabase.getInstance().reference
+                    databaseReference.child("posts").child(postId).child("likeCount")
+                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                if (dataSnapshot.exists()) {
+                                    val currentLikeCount = dataSnapshot.getValue(Int::class.java)
+                                    currentLikeCount?.let {
+                                        // 현재 좋아요 카운트에 1을 더한 값을 Firebase Realtime Database에 업데이트
+                                        databaseReference.child("posts").child(postId).child("likeCount")
+                                            .setValue(it + 1)
+                                            .addOnSuccessListener {
+                                                //val updatedLikeCount = (it ?: "0") + 1
+                                                //Log.d("BoardAdapter", "Like count updated in database: $updatedLikeCount")
+
+                                            }
+                                            .addOnFailureListener { exception ->
+                                                Log.e("BoardAdapter", "Error updating like count in database", exception)
+                                            }
+                                    }
+                                }
+                            }
+
+                            override fun onCancelled(databaseError: DatabaseError) {
+                                Log.e("BoardAdapter", "Error fetching like count from database: ${databaseError.message}")
+                            }
+                        })
+                }
+                return true
+            }
+        }
+
+        // 게시물 내용 더블 클릭 시 공감 카운트 증가 코드
+        /*private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
+            override fun onDoubleTap(e: MotionEvent): Boolean {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val currentItem = adapter.getItem(position)
+                    currentItem.likeCount += 1  // likeCount를 1 증가
+                    Log.d("BoardAdapter", "Double tapped, like count updated: ${currentItem.likeCount}")
+                    adapter.notifyItemChanged(position)  // 해당 포지션의 아이템을 업데이트
                     // *** DB 업데이트 ***
                     // 이곳에 해당 position 게시물의 증가된 currentItem.likeCount로 업데이트 하시면 됩니다.
                     // 각 게시물은 boardID로 구분하시면 됩니다.
@@ -121,7 +165,7 @@ class BoardAdapter(private val roomID: String?) : ListAdapter<BoardItem, BoardAd
                 }
                 return true
             }
-        }
+        }*/
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoardViewHolder {

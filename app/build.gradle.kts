@@ -58,5 +58,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.firebase.database)
+    implementation(libs.firebase.storage)
     implementation(libs.kotlinx.coroutines.android)
 }
