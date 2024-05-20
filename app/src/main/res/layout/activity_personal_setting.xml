@@ -8,14 +8,13 @@
     android:layout_height="match_parent"
     tools:context=".setting.PersonalSettingActivity">
 
-    <TextView
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/change_personal_info_container"
-        android:text="@string/personal_set"
-        android:textSize="30sp"
-        android:textAlignment="center"
-        android:layout_marginBottom="50dp"/>
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/toolbar_shadow"
+        app:title="@string/personal_set"/>
 
     <LinearLayout
         android:id="@+id/change_personal_info_container"

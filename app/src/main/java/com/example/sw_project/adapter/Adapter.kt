@@ -9,7 +9,7 @@ import com.example.sw_project.R
 
 //data class RoomList(var name: String, var code: String)
 
-data class listItem(val name: String, val code: String)
+data class listItem(val name: String, val id: String)
 
 class Adapter(val Roomlist:ArrayList<listItem>) : RecyclerView.Adapter<Adapter.RoomAdapterHolder>(){
     //var roomlist=mutableListOf<RoomList>()

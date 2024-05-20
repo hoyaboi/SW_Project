@@ -40,9 +40,6 @@ class PersonalSettingActivity : AppCompatActivity() {
         name = intent.getStringExtra("name")
         birthDate = intent.getStringExtra("birthDate")
 
-        // 사용자 정보 로깅
-        Log.d("PersonalSettingActivity", "user : ${auth.currentUser!!.email}")
-
         setupViews()
         setupListeners()
     }
@@ -85,14 +82,19 @@ class PersonalSettingActivity : AppCompatActivity() {
     }
 
     private fun saveChagnedUserInfo() {
-        name = newNameEditText.text.toString()
-        birthDate = newBirthEditText.text.toString()
+        val newName = newNameEditText.text.toString()
+        val newBirthDate = newBirthEditText.text.toString()
         val email: String = auth.currentUser!!.email.toString()
 
+        if(newName.isEmpty() || newBirthDate.isEmpty()) {
+            Toast.makeText(applicationContext, "모든 필드를 채워주세요.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val userMap = hashMapOf(
-            "name" to name,
+            "name" to newName,
             "email" to email,
-            "birthDate" to birthDate
+            "birthDate" to newBirthDate
         )
 
         database.child("users").child(auth.uid!!).setValue(userMap)

@@ -1,7 +1,6 @@
 package com.example.sw_project.setting
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -13,23 +12,22 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
-class BoardSettingActivity : AppCompatActivity() {
+class ModifyBoardActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_board_setting)
+        setContentView(R.layout.activity_modify_view)
 
         // 상태표시줄 색상 변경
         window.statusBarColor = ContextCompat.getColor(this, R.color.lightgrey)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
-        val roomID = intent.getStringExtra("roomID") ?: return
+        val postID = intent.getStringExtra("postID") ?: return
 
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
-
 
 
     }

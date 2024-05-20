@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import com.bumptech.glide.Glide
 import com.example.sw_project.LoginActivity
 import com.example.sw_project.R
 import com.example.sw_project.databinding.FragmentProfileBinding
@@ -31,6 +32,7 @@ class ProfileFragment : Fragment() {
     private var roomID: String? = null
     private var name: String? = null
     private var birthDate: String? = null
+    private var profileUri: String? = null
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
     private lateinit var auth: FirebaseAuth
@@ -91,12 +93,28 @@ class ProfileFragment : Fragment() {
             }
         }
         database.child("users").child(auth.uid!!).addValueEventListener(userProfileListener!!)
+
+        // 프로필 이미지 URI 불러오기
+        database.child("rooms").child(roomID!!).child("participants").child(auth.uid!!).child("profileUri")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    profileUri = snapshot.getValue(String::class.java) ?: ""
+                    Glide.with(requireContext())
+                        .load(profileUri!!.ifEmpty { R.drawable.tmp_face })  // 빈 URI인 경우 기본 이미지 사용
+                        .circleCrop()
+                        .into(binding.profileImage)                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.w("ProfileFragment", "Failed to load profile image: $error")
+                }
+            })
     }
 
     private fun profileImageSetting() {
         binding.profileImageSettingConatainer.setOnClickListener {
             val intent = Intent(requireContext(), ProfileImageSettingActivity::class.java)
             intent.putExtra("roomID", roomID)
+            intent.putExtra("profileUri", profileUri)
             startActivity(intent)
         }
     }

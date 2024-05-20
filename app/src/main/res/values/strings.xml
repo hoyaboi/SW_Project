@@ -56,6 +56,10 @@
     <string name="schedule_notif_set">일정 알림</string>
     <string name="schedule_notif_set_sub">오늘 일정이 있으면 알림이 울립니다.</string>
     <string name="signout">로그아웃</string>
+    <string name="change_profile">프로필 변경</string>
+    <string name="remove_profile">프리필 제거</string>
+    <string name="change">변경하기</string>
+    <string name="modify">수정하기</string>
 
 
 </resources>
