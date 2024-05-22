@@ -18,6 +18,8 @@ import com.example.sw_project.databinding.FragmentBoardBinding
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import com.google.firebase.database.*
+import com.example.sw_project.models.Post
 
 class BoardFragment : Fragment() {
     private var userEmail: String? = null
@@ -90,59 +92,82 @@ class BoardFragment : Fragment() {
         )
         memberAdapter.setMembers(members)
     }
+    private fun loadMockData() {
+        val databaseReference = FirebaseDatabase.getInstance().reference
+        val postsRef = databaseReference.child("posts")
+
+        postsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val postList = mutableListOf<BoardItem>()
+                val dateFormatter = SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss", Locale.getDefault())
+
+                for (postSnapshot in dataSnapshot.children) {
+                    try {
+                        val post = postSnapshot.getValue(Post::class.java)
+                        post?.let {
+                            // Post 객체를 BoardItem 객체로 변환
+                            val boardItem = BoardItem(
+                                roomCode = it.roomCode,
+                                boardID = it.postId,
+                                profileImageUrl = "",//it.profileImageUrl,
+                                memberName = it.uid, // 이 uid를 가진 유저의 이름 나오게 하기
+                                imageUrl = "",//it.imageUri,
+                                likeCount = it.likeCount,
+                                contentText = it.content,
+                                dateText = it.postTime
+                            )
+                            postList.add(boardItem)
+                        }
+                    } catch (e: Exception) {
+                        Log.e("BoardFragment", "Error parsing post: ${e.message}")
+                    }
+                }
+
+                try {
+                    postList.sortByDescending { dateFormatter.parse(it.dateText) ?: Date() }
+                    // Ensure this runs on the UI thread
+                    activity?.runOnUiThread {
+                        boardAdapter.submitList(postList)
+                    }
+                } catch (e: Exception) {
+                    Log.e("BoardFragment", "Error sorting or submitting list: ${e.message}")
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e("BoardFragment", "Error loading data from Firebase: ${databaseError.message}")
+            }
+        })
+    }
+
+
+    /*private fun loadMockData() {
+        val databaseReference = FirebaseDatabase.getInstance().reference
+        val postsRef = databaseReference.child("posts")
+
+        postsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val postList = mutableListOf<BoardItem>()
+                val dateFormatter = SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss", Locale.getDefault())
+
+                for (postSnapshot in dataSnapshot.children) {
+                    val post = postSnapshot.getValue(BoardItem::class.java)
+                    post?.let {
+                        postList.add(it)
+                    }
+                }
+
+                postList.sortByDescending { dateFormatter.parse(it.dateText) ?: Date() }
+                boardAdapter.submitList(postList)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e("BoardFragment", "Error loading data from Firebase: ${databaseError.message}")
+            }
+        })
+    }*/
 
     // 게시물 데이터 설정하는 함수
-    private fun loadMockData() {
-        val dateFormatter = SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss", Locale.getDefault())
-
-        val mockData = listOf(
-            // *** 이곳에 데이터베이스에서 불러온 게시물 데이터 입력해주시면 됩니다. ***
-            // 현재는 임시 데이터로 작성했습니다.
-            // 공감 카운트 증가를 위한 DB 업데이트 코드는 ListAdapter.kt에서(103 line) 작성하시면 됩니다.
-            BoardItem(
-                roomCode = "$roomCode",
-                boardID = "1",
-                profileImageUrl = "",
-                memberName = "Member 1",
-                imageUrl = "https://images.unsplash.com/photo-1714905532906-0b9ec1b22dfa?q=80&w=2572&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                likeCount = 10,
-                contentText = "Lorem ipsum dolor sit amet. Qui exercitationem architecto et dicta dolores ut galisum illum et laboriosam amet qui delectus voluptatem qui illum enim.",
-                dateText = "2024년 05월 05일 14:20:20"
-            ),
-            BoardItem(
-                roomCode = "$roomCode",
-                boardID = "2",
-                profileImageUrl = "",
-                memberName = "Member 2",
-                imageUrl = "https://images.unsplash.com/photo-1715077856124-4405d115911d?q=80&w=2565&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                likeCount = 15,
-                contentText = "Lorem ipsum dolor sit amet. Qui exercitationem architecto et dicta dolores ut galisum illum et laboriosam amet qui delectus voluptatem qui illum enim.",
-                dateText = "2024년 05월 04일 13:15:20"
-            ),
-            BoardItem(
-                roomCode = "$roomCode",
-                boardID = "3",
-                profileImageUrl = "",
-                memberName = "Member 3",
-                imageUrl = "https://images.unsplash.com/photo-1715034136259-fed8a5b1f5fa?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaGootby1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                likeCount = 5,
-                contentText = "In detracto adipisci tacimates duo, nec oratio dolorem ex. Vix docendi consequuntur ei, in iriure eruditi tibique usu.",
-                dateText = "2024년 05월 04일 13:15:25"
-            ),
-            BoardItem(
-                roomCode = "$roomCode",
-                boardID = "4",
-                profileImageUrl = "https://images.unsplash.com/photo-1715769274428-6a833e1ad625?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                memberName = "Member 4",
-                imageUrl = "",
-                likeCount = 5,
-                contentText = "In detracto adipisci tacimates duo, nec oratio dolorem ex. Vix docendi consequuntur ei, in iriure eruditi tibique usu.",
-                dateText = dateFormatter.format(Date())
-            ),
-        ).sortedByDescending { dateFormatter.parse(it.dateText) ?: Date() }
-
-        boardAdapter.submitList(mockData)
-    }
 
     private fun navigateToAddBoardActivity() {
         val intent = Intent(activity, AddBoardActivity::class.java).apply {
