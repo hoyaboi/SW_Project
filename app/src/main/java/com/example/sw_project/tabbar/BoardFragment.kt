@@ -84,11 +84,11 @@ class BoardFragment : Fragment() {
         val members = listOf(
             // *** 이곳에 데이터베이스에서 불러온 멤버 데이터 입력해주시면 됩니다. ***
             // 현재는 임시 데이터로 작성했습니다.
-            MemberItem(profileImageUrl = "", memberName = "Member 2"),
-            MemberItem(profileImageUrl = "", memberName = "Member 2"),
-            MemberItem(profileImageUrl = "", memberName = "Member 3"),
-            MemberItem(profileImageUrl = "", memberName = "Member 4"),
-            MemberItem(profileImageUrl = "", memberName = "Member 5"),
+            MemberItem(profileImageUrl = "", uID = "Member 2"),
+            MemberItem(profileImageUrl = "", uID = "Member 2"),
+            MemberItem(profileImageUrl = "", uID = "Member 3"),
+            MemberItem(profileImageUrl = "", uID = "Member 4"),
+            MemberItem(profileImageUrl = "", uID = "Member 5"),
         )
         memberAdapter.setMembers(members)
     }
