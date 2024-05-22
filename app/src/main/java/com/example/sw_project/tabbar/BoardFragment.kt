@@ -84,7 +84,7 @@ class BoardFragment : Fragment() {
         val members = listOf(
             // *** 이곳에 데이터베이스에서 불러온 멤버 데이터 입력해주시면 됩니다. ***
             // 현재는 임시 데이터로 작성했습니다.
-            MemberItem(profileImageUrl = "", memberName = "Member 1"),
+            MemberItem(profileImageUrl = "", memberName = "Member 2"),
             MemberItem(profileImageUrl = "", memberName = "Member 2"),
             MemberItem(profileImageUrl = "", memberName = "Member 3"),
             MemberItem(profileImageUrl = "", memberName = "Member 4"),
@@ -110,7 +110,7 @@ class BoardFragment : Fragment() {
                                 roomCode = it.roomCode,
                                 boardID = it.postId,
                                 profileImageUrl = "",//it.profileImageUrl,
-                                memberName = it.uid, // 이 uid를 가진 유저의 이름 나오게 하기
+                                uID = it.uid, // 이 uid를 가진 유저의 이름 나오게 하기
                                 imageUrl = "",//it.imageUri,
                                 likeCount = it.likeCount,
                                 contentText = it.content,
