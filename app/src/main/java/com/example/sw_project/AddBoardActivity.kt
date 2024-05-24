@@ -147,12 +147,14 @@ class AddBoardActivity : AppCompatActivity() {
             val imageUri: Uri? = (imageView.drawable as? BitmapDrawable)?.bitmap?.let { bitmap ->
                 saveImageToTempFile(bitmap)
             }
+            val profileImageUrl = user.currentUser?.photoUrl.toString()
 
             // Logging for debugging
             Log.d("AddBoardActivity", "User ID: {${user.currentUser!!.uid}}")
             Log.d("AddBoardActivity", "Room Code: $roomCode")
             Log.d("AddBoardActivity", "Content: $content")
             Log.d("AddBoardActivity", "Post Time: $postTime")
+            Log.d("AddBoardActivity", "Profile Image URL: $profileImageUrl")
             imageUri?.let {
                 Log.d("AddBoardActivity", "Image URI: $it")
             } ?: Log.d("AddBoardActivity", "No Image selected")
@@ -161,13 +163,14 @@ class AddBoardActivity : AppCompatActivity() {
             val databaseReference = FirebaseDatabase.getInstance().reference
             val postId = databaseReference.child("posts").push().key ?: ""
             val post = Post(
-                postId,
-                user.currentUser!!.uid,
                 roomCode ?: "",
-                content,
-                postTime,
+                postId,
+                profileImageUrl,
+                user.currentUser!!.uid,
+                0, // 초기 likeCount는 0으로 설정
                 imageUri.toString(),
-                0 // 초기 likeCount는 0으로 설정
+                content,
+                postTime
             )
 
             databaseReference.child("posts").child(postId).setValue(post)

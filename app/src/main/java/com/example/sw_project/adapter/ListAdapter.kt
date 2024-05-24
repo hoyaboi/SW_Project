@@ -27,7 +27,7 @@ data class BoardItem(
     val roomCode: String,
     val boardID: String,
     val profileImageUrl : String,
-    val memberName: String,
+    val uID: String,
     val imageUrl: String,
     var likeCount: Int,
     val contentText: String,
@@ -68,7 +68,7 @@ class BoardAdapter(private val roomCode: String?) : ListAdapter<BoardItem, Board
         }
 
         fun bind(item: BoardItem) {
-            memberNameText.text = item.memberName
+            memberNameText.text = item.uID
             likeCountText.text = "공감 ${item.likeCount}개"
             contentText.text = item.contentText
             val inputFormat = SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss", Locale.getDefault())
@@ -80,7 +80,7 @@ class BoardAdapter(private val roomCode: String?) : ListAdapter<BoardItem, Board
             profileContainer.setOnClickListener {
                 val context = itemView.context
                 val intent = Intent(context, PersonalProfileActivity::class.java)
-                intent.putExtra("memberName", item.memberName)
+                intent.putExtra("uID", item.uID)
                 intent.putExtra("roomCode", roomCode)
                 context.startActivity(intent)
             }

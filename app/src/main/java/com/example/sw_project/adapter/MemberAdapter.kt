@@ -15,7 +15,7 @@ import com.example.sw_project.R
 // 데이터 클래스 정의
 data class MemberItem(
     val profileImageUrl: String,
-    val memberName: String
+    val uID: String
 )
 
 // MemberAdapter 구현
@@ -29,7 +29,7 @@ class MemberAdapter(private val roomCode: String?) : RecyclerView.Adapter<Member
 
         fun bind(member: MemberItem) {
             // 프로필 이미지와 이름 로딩
-            memberNameText.text = member.memberName
+            memberNameText.text = member.uID
             if (member.profileImageUrl.isNotEmpty()) {
                 Glide.with(itemView.context)
                     .load(member.profileImageUrl)
@@ -43,7 +43,7 @@ class MemberAdapter(private val roomCode: String?) : RecyclerView.Adapter<Member
             memberContainer.setOnClickListener {
                 val context = itemView.context
                 val intent = Intent(context, PersonalProfileActivity::class.java)
-                intent.putExtra("memberName", member.memberName)
+                intent.putExtra("uID", member.uID)
                 intent.putExtra("roomCode", roomCode)
                 context.startActivity(intent)
             }

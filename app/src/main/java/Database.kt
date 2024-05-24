@@ -14,11 +14,12 @@ data class Users(
 )
 
 data class Post(
-    val postId: String,
-    val uid: String,
-    val roomID: String,
-    val content: String,
-    val postTime: String,
-    val imageUri: String,
-    val likeCount: Int
+    val roomCode: String = "",
+    val postId: String = "",
+    val profileImageUrl: String = "",
+    val uid: String = "",
+    val likeCount: Int = 0,
+    val imageUri: String = "",
+    val content: String = "",
+    val postTime: String = ""
 )
