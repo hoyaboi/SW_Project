@@ -15,6 +15,7 @@ import com.example.sw_project.databinding.FragmentProfileBinding
 import com.example.sw_project.setting.BoardSettingActivity
 import com.example.sw_project.setting.PersonalSettingActivity
 import com.example.sw_project.setting.ProfileImageSettingActivity
+import com.example.sw_project.setting.ShowRoomCodeActivity
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.auth.FirebaseAuth
@@ -63,6 +64,7 @@ class ProfileFragment : Fragment() {
         boardSetting()          // 게시물 수정
         newBoardNotifSetting()  // 새 게시물 알림 설정
         scheduleNotifSetting()  // 일정 랄림 설정
+        showRoomCode()          // 방 입장 코드 확인
         signout()               // 로그아웃
 
         return binding.root
@@ -142,6 +144,14 @@ class ProfileFragment : Fragment() {
 
     private fun scheduleNotifSetting() {
         // 일정 알림 처리 코드
+    }
+
+    private fun showRoomCode() {
+        binding.roomCodeContainer.setOnClickListener {
+            val intent = Intent(requireContext(), ShowRoomCodeActivity::class.java)
+            intent.putExtra("roomCode", roomCode)
+            startActivity(intent)
+        }
     }
 
     private fun signout() {
