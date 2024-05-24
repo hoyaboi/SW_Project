@@ -32,9 +32,34 @@
     <string name="change_image">이미지 변경</string>
     <string name="remove_image">이미지 제거</string>
     <string name="tab_board">게시판</string>
+
     <string name="tab_album">앨범</string>
+    <string name="tab_photo">사진</string>
+    <string name="create_album_page_name">새 앨범 생성</string>
+    <string name="create_album">앨범 생성하기</string>
+    <string name="name_album">앨범 이름</string>
+
+
     <string name="tab_schedule">일정</string>
     <string name="tab_profile">프로필</string>
+
+    <!--  개인 프로필/설정  -->
+    <string name="setting">설정</string>
+    <string name="profile_image_set">프로필 이미지 변경</string>
+    <string name="profile_image_set_sub">현재 방에서 사용하는 프로필 이미지를 변경합니다.</string>
+    <string name="personal_set">개인 설정</string>
+    <string name="personal_set_sub">사용자 이름과 생년월일이 참여중인 모든 방에서 변경됩니다.</string>
+    <string name="board_set">게시물 수정</string>
+    <string name="board_set_sub">내가 올린 게시물을 수정합니다.</string>
+    <string name="board_notif_set">새 게시물 알림</string>
+    <string name="board_notif_set_sub">새 게시물이 올라오면 알림이 울립니다.</string>
+    <string name="schedule_notif_set">일정 알림</string>
+    <string name="schedule_notif_set_sub">오늘 일정이 있으면 알림이 울립니다.</string>
+    <string name="signout">로그아웃</string>
+    <string name="change_profile">프로필 변경</string>
+    <string name="remove_profile">프리필 제거</string>
+    <string name="change">변경하기</string>
+    <string name="modify">수정하기</string>
 
 
 </resources>

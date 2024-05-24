@@ -53,9 +53,16 @@ dependencies {
     implementation(libs.androidx.viewpager2)
     implementation(libs.google.material)
     implementation(libs.glide)
+
+    //implementation "org.jetbrains.anko:anko:$anko_version"
+    //implementation(org.jetbrains.anko:anko:$anko_version)
+    //implementation 'com.github.bumptech.glide:glide:4.7.1'
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation(libs.firebase.database)
+    implementation(libs.firebase.storage)
     implementation(libs.kotlinx.coroutines.android)
 }

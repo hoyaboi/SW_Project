@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddBoardActivity">
+    tools:context=".setting.ModifyBoardActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:background="@drawable/toolbar_shadow"
-        app:title="@string/create_board_page_name"/>
+        app:title="@string/board_set"/>
 
     <LinearLayout
         android:id="@+id/image_actions_container"
@@ -107,7 +107,7 @@
         android:hint="@string/add_content"/>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/post_button"
+        android:id="@+id/modify_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -116,7 +116,7 @@
         app:strokeColor="@color/grey"
         app:strokeWidth="1dp"
         app:rippleColor="@color/grey"
-        android:text="@string/post"
+        android:text="@string/modify"
         android:textColor="@color/black"/>
 
     <ProgressBar

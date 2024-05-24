@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="80dp"
             android:gravity="center"
-            android:text="@string/roommake"
+            android:text="@string/roomenter"
             android:textSize="30sp"/>
 
         <com.google.android.material.textfield.TextInputEditText
@@ -36,8 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
-            android:hint="@string/roomcode"
-            android:inputType="numberPassword"/>
+            android:hint="@string/roomcode"/>
 
         <LinearLayout
             android:id="@+id/button_container"

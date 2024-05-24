@@ -11,7 +11,7 @@ import com.example.sw_project.databinding.FragmentScheduleBinding
 
 class ScheduleFragment : Fragment() {
     private var userEmail: String? = null
-    private var roomID: String? = null
+    private var roomCode: String? = null
 
     private var _binding: FragmentScheduleBinding? = null
     private val binding get() = _binding!!
@@ -20,7 +20,7 @@ class ScheduleFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             userEmail = it.getString("userEmail")
-            roomID = it.getString("roomID")
+            roomCode = it.getString("roomCode")
         }
     }
 
@@ -29,9 +29,9 @@ class ScheduleFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentScheduleBinding.inflate(inflater, container, false)
-        // 여기서 userEmail과 roomID를 사용하여 UI 업데이트
+        // 여기서 userEmail과 roomCode를 사용하여 UI 업데이트
         // user email과 room id 로깅
-        Log.d("ScheduleFragment", "user email: ${userEmail}, room ID: $roomID")
+        Log.d("ScheduleFragment", "user email: ${userEmail}, room ID: $roomCode")
 
 
 
@@ -48,11 +48,11 @@ class ScheduleFragment : Fragment() {
 
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(userEmail: String?, roomID: String?) =
+        fun newInstance(userEmail: String?, roomCode: String?) =
             ScheduleFragment().apply {
                 arguments = Bundle().apply {
                     putString("userEmail", userEmail)
-                    putString("roomID", roomID)
+                    putString("roomCode", roomCode)
                 }
             }
     }

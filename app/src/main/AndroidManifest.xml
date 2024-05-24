@@ -17,6 +17,24 @@
         android:theme="@style/Theme.SW_Project"
         tools:targetApi="31">
         <activity
+            android:name=".setting.ModifyBoardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".setting.BoardSettingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".setting.PersonalSettingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".setting.ProfileImageSettingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddAlbumActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PhotoviewActivity"
+            android:exported="false" />
+        <activity
             android:name=".PersonalProfileActivity"
             android:exported="false" />
         <activity
@@ -29,16 +47,16 @@
             android:name=".SignupActivity"
             android:exported="false" />
         <activity
-            android:name=".Adapter"
+            android:name=".models.com.example.sw_project.adapter.Adapter"
             android:exported="false" />
         <activity
-            android:name=".listItem"
+            android:name=".models.com.example.sw_project.adapter.listItem"
             android:exported="false" />
         <activity
-            android:name=".roomenterActivity"
+            android:name=".RoomEnterActivity"
             android:exported="false" />
         <activity
-            android:name=".roommakeActivity"
+            android:name=".RoomMakeActivity"
             android:exported="false" />
         <activity
             android:name=".StartActivity"

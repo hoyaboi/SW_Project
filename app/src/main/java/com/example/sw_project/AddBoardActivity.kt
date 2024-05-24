@@ -32,10 +32,13 @@ import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import com.google.firebase.database.*
+import com.example.sw_project.models.Post
+import com.google.firebase.auth.FirebaseAuth
 
 class AddBoardActivity : AppCompatActivity() {
-    private var userEmail: String? = null
-    private var roomID: String? = null
+    private lateinit var user: FirebaseAuth
+    private var roomCode: String? = null
 
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
     private lateinit var imageView: ImageView
@@ -58,13 +61,14 @@ class AddBoardActivity : AppCompatActivity() {
         window.statusBarColor = ContextCompat.getColor(this, R.color.lightgrey)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
+        user = FirebaseAuth.getInstance()
+
         setupViews()
         setupPermissions()
         setupImagePickerLauncher()
 
         // 이전 프래그먼트로부터 데이터 받기
-        userEmail = intent.getStringExtra("userEmail")
-        roomID = intent.getStringExtra("roomID")
+        roomCode = intent.getStringExtra("roomCode")
 
         // 이미지 추가 버튼 클릭 시
         addImageButton.setOnClickListener {
@@ -145,6 +149,56 @@ class AddBoardActivity : AppCompatActivity() {
             }
 
             // Logging for debugging
+            Log.d("AddBoardActivity", "User ID: {${user.currentUser!!.uid}}")
+            Log.d("AddBoardActivity", "Room Code: $roomCode")
+            Log.d("AddBoardActivity", "Content: $content")
+            Log.d("AddBoardActivity", "Post Time: $postTime")
+            imageUri?.let {
+                Log.d("AddBoardActivity", "Image URI: $it")
+            } ?: Log.d("AddBoardActivity", "No Image selected")
+
+            // Firebase Realtime Database에 데이터 저장
+            val databaseReference = FirebaseDatabase.getInstance().reference
+            val postId = databaseReference.child("posts").push().key ?: ""
+            val post = Post(
+                postId,
+                user.currentUser!!.uid,
+                roomCode ?: "",
+                content,
+                postTime,
+                imageUri.toString(),
+                0 // 초기 likeCount는 0으로 설정
+            )
+
+            databaseReference.child("posts").child(postId).setValue(post)
+                .addOnSuccessListener {
+                    Log.d("AddBoardActivity", "Post saved successfully")
+                    Toast.makeText(this@AddBoardActivity, "게시물이 성공적으로 등록되었습니다.", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("AddBoardActivity", "Error saving post", exception)
+                    Toast.makeText(this@AddBoardActivity, "게시물 등록에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                }
+
+            progressBar.visibility = View.GONE
+        }
+    }
+    /*private fun post() {
+        progressBar.visibility = View.VISIBLE
+
+        coroutineScope.launch {
+            // 게시글 내용과 작성 시간 가져오기
+            val content = contentEditText.text.toString().trim()
+            val currentTime = System.currentTimeMillis()
+            val dateFormatter = SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss", Locale.getDefault())
+            val postTime = dateFormatter.format(Date(currentTime))
+
+            // 이미지 URI 가져오기
+            val imageUri: Uri? = (imageView.drawable as? BitmapDrawable)?.bitmap?.let { bitmap ->
+                saveImageToTempFile(bitmap)
+            }
+
+            // Logging for debugging
             Log.d("AddBoardActivity", "User Email: $userEmail")
             Log.d("AddBoardActivity", "Room ID: $roomID")
             Log.d("AddBoardActivity", "Content: $content")
@@ -161,7 +215,7 @@ class AddBoardActivity : AppCompatActivity() {
 
             progressBar.visibility = View.GONE
         }
-    }
+    }*/
 
     private fun saveImageToTempFile(bitmap: Bitmap): Uri {
         // 이미지 파일을 임시 파일로 저장하고 Uri 반환
