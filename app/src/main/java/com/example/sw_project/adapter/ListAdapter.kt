@@ -26,9 +26,9 @@ import com.google.firebase.database.*
 data class BoardItem(
     val roomCode: String,
     val boardID: String,
-    val profileImageUrl : String,
+    val profileImageUri : String,
     val uID: String,
-    val imageUrl: String,
+    val imageUri: String,
     var likeCount: Int,
     val contentText: String,
     val dateText: String
@@ -86,9 +86,9 @@ class BoardAdapter(private val roomCode: String?) : ListAdapter<BoardItem, Board
             }
 
             // 프로필 이미지 로딩
-            if (item.profileImageUrl.isNotEmpty()) {
+            if (item.profileImageUri.isNotEmpty()) {
                 Glide.with(itemView.context)
-                    .load(item.profileImageUrl)
+                    .load(item.profileImageUri)
                     .circleCrop()
                     .into(profileImageView)
             } else {
@@ -96,10 +96,10 @@ class BoardAdapter(private val roomCode: String?) : ListAdapter<BoardItem, Board
             }
 
             // 게시물 이미지 로딩
-            if (item.imageUrl.isNotEmpty()) {
+            if (item.imageUri.isNotEmpty()) {
                 imageView.visibility = View.VISIBLE
                 Glide.with(itemView.context)
-                    .load(item.imageUrl)
+                    .load(item.imageUri)
                     .into(imageView)
             } else {
                 imageView.visibility = View.GONE

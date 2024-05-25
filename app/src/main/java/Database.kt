@@ -16,7 +16,6 @@ data class Users(
 data class Post(
     val roomCode: String = "",
     val postId: String = "",
-    val profileImageUrl: String = "",
     val uid: String = "",
     val likeCount: Int = 0,
     val imageUri: String = "",

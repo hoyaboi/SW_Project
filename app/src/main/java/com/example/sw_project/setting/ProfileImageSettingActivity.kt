@@ -2,23 +2,28 @@ package com.example.sw_project.setting
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import androidx.activity.enableEdgeToEdge
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.transition.Transition
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
 import com.example.sw_project.R
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import java.io.ByteArrayOutputStream
 
 class ProfileImageSettingActivity : AppCompatActivity() {
     private var profileUri: String? = null
@@ -88,6 +93,7 @@ class ProfileImageSettingActivity : AppCompatActivity() {
                     .load(uri)
                     .circleCrop()
                     .into(profileImage)
+                profileUri = uri.toString()
             }
         }
     }
@@ -102,14 +108,63 @@ class ProfileImageSettingActivity : AppCompatActivity() {
                 .load(R.drawable.tmp_face)
                 .circleCrop()
                 .into(profileImage)
+            profileUri = ""
         }
 
         changeButton.setOnClickListener {
-            // 프로필 이미지를 firebase storage에 저장 후, 데이터베이스에 uri 저장
-            // 데이터베이스 rooms의 현재 roomCode와 일치하는 participants의 profileUri 수정
-
-            finish()
+            if (!profileUri.isNullOrEmpty()) {
+                uploadImageToStorage(Uri.parse(profileUri))
+            } else {
+                updateProfileUriInDatabase("")
+            }
         }
+    }
+
+    private fun uploadImageToStorage(imageUri: Uri) {
+        val storageRef = FirebaseStorage.getInstance().reference
+        val userID = auth.currentUser!!.uid
+        val imageRef = storageRef.child("images/rooms/$roomCode/$userID/profile.jpg")
+
+        // 이미지 로드 및 리사이즈
+        Glide.with(this)
+            .asBitmap()
+            .load(imageUri)
+            .override(256, 256) // 조정할 이미지 크기 지정
+            .centerCrop()
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(resource: Bitmap, transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?) {
+                    // 비트맵을 바이트 배열로 변환
+                    val baos = ByteArrayOutputStream()
+                    resource.compress(Bitmap.CompressFormat.JPEG, 70, baos)
+                    val data = baos.toByteArray()
+
+                    // Firebase에 업로드
+                    imageRef.putBytes(data)
+                        .addOnSuccessListener {
+                            imageRef.downloadUrl.addOnSuccessListener { uri ->
+                                updateProfileUriInDatabase(uri.toString())
+                            }
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this@ProfileImageSettingActivity, "프로필 이미지 변경에 실패했습니다. 다시 시도하세요.", Toast.LENGTH_LONG).show()
+                        }
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {}
+            })
+    }
+
+    private fun updateProfileUriInDatabase(uri: String) {
+        val userID = auth.currentUser!!.uid
+        database.child("rooms").child(roomCode!!).child("participants").child(userID).child("profileUri")
+            .setValue(uri)
+            .addOnSuccessListener {
+                Toast.makeText(this, "프로필 이미지가 업데이트 되었습니다.", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "프로필 이미지 변경에 실패했습니다. 다시 시도하세요.", Toast.LENGTH_SHORT).show()
+            }
     }
 
 }

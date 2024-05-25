@@ -84,11 +84,11 @@ class BoardFragment : Fragment() {
         val members = listOf(
             // *** 이곳에 데이터베이스에서 불러온 멤버 데이터 입력해주시면 됩니다. ***
             // 현재는 임시 데이터로 작성했습니다.
-            MemberItem(profileImageUrl = "", uID = "Member 2"),
-            MemberItem(profileImageUrl = "", uID = "Member 2"),
-            MemberItem(profileImageUrl = "", uID = "Member 3"),
-            MemberItem(profileImageUrl = "", uID = "Member 4"),
-            MemberItem(profileImageUrl = "", uID = "Member 5"),
+            MemberItem(profileImageUrl = "", uID = "mem1"),
+            MemberItem(profileImageUrl = "", uID = "mem2"),
+            MemberItem(profileImageUrl = "", uID = "mem3"),
+            MemberItem(profileImageUrl = "", uID = "mem4"),
+            MemberItem(profileImageUrl = "", uID = "mem5"),
         )
         memberAdapter.setMembers(members)
     }
@@ -96,7 +96,7 @@ class BoardFragment : Fragment() {
         val databaseReference = FirebaseDatabase.getInstance().reference
         val postsRef = databaseReference.child("posts")
 
-        postsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        postsRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val postList = mutableListOf<BoardItem>()
                 val dateFormatter = SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss", Locale.getDefault())
@@ -109,9 +109,9 @@ class BoardFragment : Fragment() {
                             val boardItem = BoardItem(
                                 roomCode = it.roomCode,
                                 boardID = it.postId,
-                                profileImageUrl = "",//it.profileImageUrl,
+                                profileImageUri = "",//it.profileImageUri,
                                 uID = it.uid, // 이 uid를 가진 유저의 이름 나오게 하기
-                                imageUrl = "",//it.imageUri,
+                                imageUri = it.imageUri,
                                 likeCount = it.likeCount,
                                 contentText = it.content,
                                 dateText = it.postTime
@@ -128,6 +128,8 @@ class BoardFragment : Fragment() {
                     // Ensure this runs on the UI thread
                     activity?.runOnUiThread {
                         boardAdapter.submitList(postList)
+                        val recyclerView: RecyclerView = binding.boardsRecyclerView
+                        recyclerView.scrollToPosition(0)
                     }
                 } catch (e: Exception) {
                     Log.e("BoardFragment", "Error sorting or submitting list: ${e.message}")

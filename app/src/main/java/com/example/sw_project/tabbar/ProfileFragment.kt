@@ -98,14 +98,14 @@ class ProfileFragment : Fragment() {
 
         // 프로필 이미지 URI 불러오기
         database.child("rooms").child(roomCode!!).child("participants").child(auth.uid!!).child("profileUri")
-            .addListenerForSingleValueEvent(object : ValueEventListener {
+            .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     profileUri = snapshot.getValue(String::class.java) ?: ""
                     Glide.with(requireContext())
                         .load(profileUri!!.ifEmpty { R.drawable.tmp_face })  // 빈 URI인 경우 기본 이미지 사용
                         .circleCrop()
-                        .into(binding.profileImage)                }
-
+                        .into(binding.profileImage)
+                }
                 override fun onCancelled(error: DatabaseError) {
                     Log.w("ProfileFragment", "Failed to load profile image: $error")
                 }

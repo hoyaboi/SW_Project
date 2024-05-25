@@ -1,5 +1,6 @@
 package com.example.sw_project
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
@@ -7,6 +8,7 @@ import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sw_project.databinding.ActivityStartBinding
@@ -26,6 +28,7 @@ class StartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityStartBinding
     private val roomList = arrayListOf<listItem>()
     private lateinit var listAdapter: Adapter
+    private var backPressedTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,10 +58,12 @@ class StartActivity : AppCompatActivity() {
             startActivity(intent)
 
         }
+
         binding.enterbutton.setOnClickListener {
             val intent = Intent(this, RoomEnterActivity::class.java)
             startActivity(intent)
         }
+
         listAdapter.setItemClickListener(object : Adapter.OnItemClickListener {
             override fun onClick(v: View, position: Int) {
                 val intent = Intent(this@StartActivity, MainActivity::class.java)
@@ -94,5 +99,16 @@ class StartActivity : AppCompatActivity() {
                     Log.e("StartActivity", "Error loading rooms: $error")
                 }
             })
+    }
+
+    @SuppressLint("MissingSuperCall")
+    override fun onBackPressed() {
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            finishAffinity()
+            return
+        } else {
+            Toast.makeText(this, "뒤로 버튼을 한번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
+        }
+        backPressedTime = System.currentTimeMillis()
     }
 }

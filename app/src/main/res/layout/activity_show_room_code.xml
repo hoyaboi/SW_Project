@@ -17,11 +17,25 @@
         app:title="@string/room_code"/>
 
     <TextView
+        android:id="@+id/room_code_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="room code"
         android:textSize="30sp"/>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/copy_code_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/room_code_text"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="30dp"
+        android:text="@string/copy_room_code"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/lightgrey"
+        app:strokeColor="@color/grey"
+        app:strokeWidth="1dp"
+        app:rippleColor="@color/grey"/>
 
 </RelativeLayout>

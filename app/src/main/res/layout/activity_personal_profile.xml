@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                android:text="이름 : Member_n"
+                android:text="이름 : "
                 android:textSize="19sp"/>
 
             <TextView
@@ -51,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                android:text="생일 : 2000년 01월 01일"
+                android:text="생일 : "
                 android:textSize="19sp"/>
 
         </LinearLayout>
