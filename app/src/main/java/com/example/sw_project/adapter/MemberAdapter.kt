@@ -68,16 +68,14 @@ class MemberAdapter(private val roomCode: String?) : RecyclerView.Adapter<Member
                 params.rightMargin = 5.dpToPx(holder.itemView.context)
             }
             itemCount - 1 -> {
-                params.leftMargin = 10.dpToPx(holder.itemView.context)
-                params.rightMargin = 10.dpToPx(holder.itemView.context)
-            }
-            else -> {
                 params.leftMargin = 5.dpToPx(holder.itemView.context)
                 params.rightMargin = 15.dpToPx(holder.itemView.context)
             }
+            else -> {
+                params.leftMargin = 5.dpToPx(holder.itemView.context)
+                params.rightMargin = 5.dpToPx(holder.itemView.context)
+            }
         }
-        params.topMargin = 1.dpToPx(holder.itemView.context)
-        params.bottomMargin = 1.dpToPx(holder.itemView.context)
     }
 
     override fun getItemCount() = members.size

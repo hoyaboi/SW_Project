@@ -99,10 +99,6 @@ class SignupActivity : AppCompatActivity() {
                             Toast.makeText(this, "Failed to save user information", Toast.LENGTH_SHORT).show()
                         }
                 }
-
-
-                // 회원 정보 등록 후 StartActivity로 넘어가는 코드
-                startActivity(Intent(this, LoginActivity::class.java))
             } else {
                 Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG).show()
             }

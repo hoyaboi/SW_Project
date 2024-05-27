@@ -61,6 +61,10 @@ class BoardFragment : Fragment() {
         loadMockData()      // 게시물 데이터 로드
         loadMemberData()    // 멤버 데이터 로드
 
+        // 프로필 변경 감지
+        setupProfileChangeListener()
+        setupProfileImageChangeListener()
+
         // '+' 플로팅 버튼 클릭시 게시판 추가 페이지로 이동
         _binding?.addBoard?.setOnClickListener {
             navigateToAddBoardActivity()
@@ -189,6 +193,37 @@ class BoardFragment : Fragment() {
             putExtra("roomCode", roomCode)
         }
         startActivity(intent)
+    }
+
+    private fun setupProfileChangeListener() {
+        // 유저 프로필 정보의 변경을 감지
+        database.child("users").child(auth.currentUser!!.uid).addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                // 프로필 정보가 변경되면 게시물 목록을 다시 로드
+                loadMockData()
+                loadMemberData()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("BoardFragment", "Error loading user profile data: ${error.message}")
+            }
+        })
+    }
+
+    private fun setupProfileImageChangeListener() {
+        // 유저 프로필 정보의 변경을 감지
+        database.child("rooms").child(roomCode!!).child("participants").child(auth.currentUser!!.uid)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    // 프로필 정보가 변경되면 게시물 목록을 다시 로드
+                    loadMockData()
+                    loadMemberData()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("BoardFragment", "Error loading user profile data: ${error.message}")
+                }
+        })
     }
 
     override fun onDestroyView() {
