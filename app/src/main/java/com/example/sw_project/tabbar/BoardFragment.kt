@@ -20,12 +20,21 @@ import java.util.Date
 import java.util.Locale
 import com.google.firebase.database.*
 import com.example.sw_project.models.Post
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class BoardFragment : Fragment() {
     private var userEmail: String? = null
     private var roomCode: String? = null
     private var _binding: FragmentBoardBinding? = null
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
     private val binding get() = _binding!!
+    private lateinit var auth: FirebaseAuth
+    private lateinit var database: DatabaseReference
     private lateinit var boardAdapter: BoardAdapter
     private lateinit var memberAdapter: MemberAdapter
 
@@ -42,6 +51,9 @@ class BoardFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentBoardBinding.inflate(inflater, container, false)
+
+        auth = FirebaseAuth.getInstance()
+        database = FirebaseDatabase.getInstance().reference
 
         setupRecyclerView() // 리사이클러 뷰 설정
         loadMockData()      // 게시물 데이터 로드
@@ -93,46 +105,38 @@ class BoardFragment : Fragment() {
         memberAdapter.setMembers(members)
     }
     private fun loadMockData() {
-        val databaseReference = FirebaseDatabase.getInstance().reference
-        val postsRef = databaseReference.child("posts")
-
-        postsRef.addValueEventListener(object : ValueEventListener {
+        database.child("posts").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val postList = mutableListOf<BoardItem>()
-                val dateFormatter = SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss", Locale.getDefault())
+                coroutineScope.launch {
+                    val postList = mutableListOf<BoardItem>()
+                    val dateFormatter = SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss", Locale.getDefault())
 
-                for (postSnapshot in dataSnapshot.children) {
-                    try {
+                    dataSnapshot.children.forEach { postSnapshot ->
                         val post = postSnapshot.getValue(Post::class.java)
-                        post?.let {
+                        if (post != null) {
+                            val profileUri = async(Dispatchers.IO) { getProfileUri(post.uid) }
+                            val userName = async(Dispatchers.IO) { getUserName(post.uid) }
+
                             // Post 객체를 BoardItem 객체로 변환
                             val boardItem = BoardItem(
-                                roomCode = it.roomCode,
-                                boardID = it.postId,
-                                profileImageUri = "",//it.profileImageUri,
-                                uID = it.uid, // 이 uid를 가진 유저의 이름 나오게 하기
-                                imageUri = it.imageUri,
-                                likeCount = it.likeCount,
-                                contentText = it.content,
-                                dateText = it.postTime
+                                roomCode = post.roomCode,
+                                boardID = post.postId,
+                                profileImageUri = profileUri.await(),
+                                uID = post.uid,
+                                uName = userName.await(),
+                                imageUri = post.imageUri,
+                                likeCount = post.likeCount,
+                                contentText = post.content,
+                                dateText = post.postTime
                             )
                             postList.add(boardItem)
                         }
-                    } catch (e: Exception) {
-                        Log.e("BoardFragment", "Error parsing post: ${e.message}")
                     }
-                }
 
-                try {
+                    // 날짜 기준으로 정렬
                     postList.sortByDescending { dateFormatter.parse(it.dateText) ?: Date() }
-                    // Ensure this runs on the UI thread
-                    activity?.runOnUiThread {
-                        boardAdapter.submitList(postList)
-                        val recyclerView: RecyclerView = binding.boardsRecyclerView
-                        recyclerView.scrollToPosition(0)
-                    }
-                } catch (e: Exception) {
-                    Log.e("BoardFragment", "Error sorting or submitting list: ${e.message}")
+                    boardAdapter.submitList(postList)
+                    binding.boardsRecyclerView.scrollToPosition(0)
                 }
             }
 
@@ -142,34 +146,15 @@ class BoardFragment : Fragment() {
         })
     }
 
+    suspend fun getProfileUri(uid: String): String {
+        val snapshot = database.child("rooms").child(roomCode!!).child("participants").child(uid).child("profileUri").get().await()
+        return snapshot.getValue(String::class.java) ?: ""
+    }
 
-    /*private fun loadMockData() {
-        val databaseReference = FirebaseDatabase.getInstance().reference
-        val postsRef = databaseReference.child("posts")
-
-        postsRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val postList = mutableListOf<BoardItem>()
-                val dateFormatter = SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss", Locale.getDefault())
-
-                for (postSnapshot in dataSnapshot.children) {
-                    val post = postSnapshot.getValue(BoardItem::class.java)
-                    post?.let {
-                        postList.add(it)
-                    }
-                }
-
-                postList.sortByDescending { dateFormatter.parse(it.dateText) ?: Date() }
-                boardAdapter.submitList(postList)
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.e("BoardFragment", "Error loading data from Firebase: ${databaseError.message}")
-            }
-        })
-    }*/
-
-    // 게시물 데이터 설정하는 함수
+    suspend fun getUserName(uid: String): String {
+        val snapshot = database.child("users").child(uid).child("name").get().await()
+        return snapshot.getValue(String::class.java) ?: "Unknown"
+    }
 
     private fun navigateToAddBoardActivity() {
         val intent = Intent(activity, AddBoardActivity::class.java).apply {
