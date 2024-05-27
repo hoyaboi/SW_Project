@@ -2,6 +2,7 @@ package com.example.sw_project
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +30,7 @@ class AddAlbumActivity : AppCompatActivity() {
 
             val editalbumname = findViewById<EditText>(R.id.Albumname)
             val albumname = editalbumname.getText().toString()
+            Log.d("AddAlbum","albumname: ${albumname}")
             //테스트용 입력값 fragment로 보내기
             if (albumname.isNotEmpty()) {
                 /*val intent = Intent(this, AlbumFragment::class.java)
