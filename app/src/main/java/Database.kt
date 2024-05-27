@@ -22,3 +22,8 @@ data class Post(
     val content: String = "",
     val postTime: String = ""
 )
+
+data class Member(
+    val profileUri: String = "",
+    val uID: String = ""
+)

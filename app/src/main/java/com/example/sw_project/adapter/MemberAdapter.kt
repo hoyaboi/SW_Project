@@ -1,6 +1,8 @@
 package com.example.sw_project.models.com.example.sw_project.adapter
 
+import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +17,8 @@ import com.example.sw_project.R
 // 데이터 클래스 정의
 data class MemberItem(
     val profileImageUrl: String,
-    val uID: String
+    val uID: String,
+    val uName: String
 )
 
 // MemberAdapter 구현
@@ -29,7 +32,7 @@ class MemberAdapter(private val roomCode: String?) : RecyclerView.Adapter<Member
 
         fun bind(member: MemberItem) {
             // 프로필 이미지와 이름 로딩
-            memberNameText.text = member.uID
+            memberNameText.text = member.uName
             if (member.profileImageUrl.isNotEmpty()) {
                 Glide.with(itemView.context)
                     .load(member.profileImageUrl)
@@ -57,12 +60,35 @@ class MemberAdapter(private val roomCode: String?) : RecyclerView.Adapter<Member
 
     override fun onBindViewHolder(holder: MemberViewHolder, position: Int) {
         holder.bind(members[position])
+
+        val params = holder.itemView.layoutParams as ViewGroup.MarginLayoutParams
+        when (position) {
+            0 -> {
+                params.leftMargin = 15.dpToPx(holder.itemView.context)
+                params.rightMargin = 5.dpToPx(holder.itemView.context)
+            }
+            itemCount - 1 -> {
+                params.leftMargin = 10.dpToPx(holder.itemView.context)
+                params.rightMargin = 10.dpToPx(holder.itemView.context)
+            }
+            else -> {
+                params.leftMargin = 5.dpToPx(holder.itemView.context)
+                params.rightMargin = 15.dpToPx(holder.itemView.context)
+            }
+        }
+        params.topMargin = 1.dpToPx(holder.itemView.context)
+        params.bottomMargin = 1.dpToPx(holder.itemView.context)
     }
 
     override fun getItemCount() = members.size
+
+    private fun Int.dpToPx(context: Context): Int {
+        return (this * context.resources.displayMetrics.density).toInt()
+    }
 
     fun setMembers(members: List<MemberItem>) {
         this.members = members
         notifyDataSetChanged()
     }
+
 }

@@ -1,6 +1,7 @@
 package com.example.sw_project.tabbar
 
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import com.example.sw_project.models.com.example.sw_project.adapter.BoardItem
 import com.example.sw_project.models.com.example.sw_project.adapter.MemberAdapter
 import com.example.sw_project.models.com.example.sw_project.adapter.MemberItem
 import com.example.sw_project.databinding.FragmentBoardBinding
+import com.example.sw_project.models.Member
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -68,17 +70,17 @@ class BoardFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        // 게시물 리사이클러 뷰
-        boardAdapter = BoardAdapter(roomCode)
-        binding.boardsRecyclerView.adapter = boardAdapter
-        binding.boardsRecyclerView.layoutManager = LinearLayoutManager(context)
-
         // 멤버 리사이클러 뷰
         memberAdapter = MemberAdapter(roomCode)
         binding.memberRecyclerView.adapter = memberAdapter
         binding.memberRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-        // 스크롤 시 플로팅 버튼 가시성 조정
+        // 게시물 리사이클러 뷰
+        boardAdapter = BoardAdapter(roomCode)
+        binding.boardsRecyclerView.adapter = boardAdapter
+        binding.boardsRecyclerView.layoutManager = LinearLayoutManager(context)
+
+        // 스크롤 시 플로팅 버튼 visibility 조정
         binding.boardsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -91,19 +93,7 @@ class BoardFragment : Fragment() {
         })
     }
 
-    // 멤버 데이터 설정하는 함수
-    private fun loadMemberData() {
-        val members = listOf(
-            // *** 이곳에 데이터베이스에서 불러온 멤버 데이터 입력해주시면 됩니다. ***
-            // 현재는 임시 데이터로 작성했습니다.
-            MemberItem(profileImageUrl = "", uID = "mem1"),
-            MemberItem(profileImageUrl = "", uID = "mem2"),
-            MemberItem(profileImageUrl = "", uID = "mem3"),
-            MemberItem(profileImageUrl = "", uID = "mem4"),
-            MemberItem(profileImageUrl = "", uID = "mem5"),
-        )
-        memberAdapter.setMembers(members)
-    }
+    // 데이터 로드
     private fun loadMockData() {
         database.child("posts").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -129,19 +119,56 @@ class BoardFragment : Fragment() {
                                 contentText = post.content,
                                 dateText = post.postTime
                             )
+
                             postList.add(boardItem)
                         }
                     }
 
-                    // 날짜 기준으로 정렬
-                    postList.sortByDescending { dateFormatter.parse(it.dateText) ?: Date() }
-                    boardAdapter.submitList(postList)
-                    binding.boardsRecyclerView.scrollToPosition(0)
+                    postList.sortByDescending { dateFormatter.parse(it.dateText) ?: Date() } // 날짜 기준 정렬
+                    activity?.runOnUiThread {
+                        boardAdapter.submitList(postList) {
+                            binding.boardsRecyclerView.scrollToPosition(0)
+                        }
+                    }
                 }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 Log.e("BoardFragment", "Error loading data from Firebase: ${databaseError.message}")
+            }
+        })
+    }
+
+    private fun loadMemberData() {
+        database.child("rooms").child(roomCode!!).child("participants").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                coroutineScope.launch {
+                    val memberList = mutableListOf<MemberItem>()
+
+                    snapshot.children.forEach { memberSnapshot ->
+                        val member = memberSnapshot.getValue(Member::class.java)
+                        if (member != null) {
+                            val userName = async(Dispatchers.IO) { getUserName(member.uID) }
+
+                            // member item 추가
+                            val memberItem = MemberItem(
+                                profileImageUrl = member.profileUri,
+                                uID = member.uID,
+                                uName = userName.await()
+                            )
+
+                            memberList.add(memberItem)
+
+                            activity?.runOnUiThread {
+                                memberAdapter.setMembers(memberList)
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("BoardFragment", "Error loading data from Firebase: ${error.message}")
             }
         })
     }
