@@ -16,6 +16,13 @@
 
         >
 
+        <ImageView
+            android:id="@+id/albumCover"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/album_cover" />
+
         <TextView
             android:id="@+id/album_name"
             android:layout_width="0dp"

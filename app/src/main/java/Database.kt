@@ -23,3 +23,9 @@ data class Post(
     val content: String = "",
     val postTime: String = ""
 )
+
+data class Album(
+    val id: String = "",
+    val name: String = "",
+    val coverImage: String = ""
+)

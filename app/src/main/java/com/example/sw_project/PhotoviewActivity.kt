@@ -28,88 +28,129 @@ import com.example.sw_project.models.com.example.sw_project.adapter.PhotoAdapter
 import com.example.sw_project.models.com.example.sw_project.adapter.listItem
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+
 
 class PhotoviewActivity : AppCompatActivity() {
-    lateinit var binding: ActivityPhotoviewBinding
-    lateinit var photoAdapter:PhotoAdapter
-    private lateinit var getResult:ActivityResultLauncher<Intent>
-    //var imagelist: <Uri>
-    var imagelist= arrayListOf<Uri>()
-    //val adapter=PhotoAdapter(list,this)
-    private lateinit var imageView: ImageView
+
+    private lateinit var binding: ActivityPhotoviewBinding
+    private lateinit var photoAdapter: PhotoAdapter
+    private lateinit var getResult: ActivityResultLauncher<Intent>
+    private lateinit var storageReference: StorageReference
+    private val imagelist = arrayListOf<Uri>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val albumid =intent.getIntExtra("albumID",0)
-        Log.d("PhotoviewActivity",  "album ID: $albumid")
-        //enableEdgeToEdge()
-        binding=ActivityPhotoviewBinding.inflate(layoutInflater)
+        binding = ActivityPhotoviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        /*ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }*/
-        //권한 확인
-        setupPermissions()
 
-        photoAdapter= PhotoAdapter(imagelist,this)
-        //binding.recyclerview.layoutManager=LinearLayoutManager(this)
-        binding.recyclerview.layoutManager=GridLayoutManager(this,3)
-        //binding.recyclerview.layoutManager=LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
-        binding.recyclerview.adapter=photoAdapter
-        //var getimage=findViewById<FloatingActionButton>(R.id.add_photo)
-        //var recyclerview=findViewById<RecyclerView>(R.id.recyclerview)
-
+        val albumId = intent.getStringExtra("albumID")
+        if (albumId == null) {
+            Toast.makeText(this, "앨범 ID를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
+            finish()
+        }
+        else {
+            loadPhotosFromDatabase(albumId)
+        }
         binding.addPhoto.setOnClickListener {
-            var intent=Intent(Intent.ACTION_PICK)
-            intent.type="image/*"
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
-            getResult.launch(intent)
+            checkPermissionAndOpenGallery()
         }
 
-        getResult=registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-            if(it.resultCode== RESULT_OK){
-                if(it.data!!.clipData!=null){
-                    val count=it.data!!.clipData!!.itemCount
-                    for(index in 0 until count){
-                        val imageUri=it.data!!.clipData!!.getItemAt(index).uri
-
-                        // imageUri이 사진 정보
-                        imagelist.add(imageUri)
-                    }
-                }
-                else{
-                    val imageUri=it.data!!.data
-                    imagelist.add(imageUri!!)
-                }
-                photoAdapter.notifyDataSetChanged()
-            }
-        }
+        setupPermissions()
+        setupFirebaseStorage()
+        setupRecyclerView()
+        setupActivityResult()
     }
 
-    /*ActivityResultContracts.StartActivityForResult()){
-        if(it.resultCode== RESULT_OK){
-            if(it.data!!.clipData!=null) {
-                val count = it.data!!.clipData!!.itemCount
-                for(index in 0 until count){
-                    val imageUri=it.data!!.clipData!!.getItemAt(index).uri
-                    imagelist.add(imageUri)
-                }
-            }
-            else{
-                val imageUri=it.data!!.data
-                imagelist.add(imageUri!!)
-            }
-            photoAdapter.notifyDataSetChanged()
+    private fun checkPermissionAndOpenGallery() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE)
+        } else {
+            openGallery()
         }
-    }*/
-
+    }
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        intent.type = "image/*"
+        getResult.launch(intent)
+    }
     private fun setupPermissions() {
         if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            // 스토리지 읽기 권한 요청
             requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 100)
         }
     }
+
+    private fun setupFirebaseStorage() {
+        storageReference = FirebaseStorage.getInstance().reference
+    }
+
+    private fun setupRecyclerView() {
+        photoAdapter = PhotoAdapter(imagelist, this)
+        binding.recyclerview.layoutManager = GridLayoutManager(this, 3)
+        binding.recyclerview.adapter = photoAdapter
+    }
+
+    private fun setupActivityResult() {
+        getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val albumId = intent.getStringExtra("albumID")
+                if (result.data?.clipData != null) {
+                    val count = result.data?.clipData?.itemCount ?: 0
+                    for (index in 0 until count) {
+                        val imageUri = result.data?.clipData!!.getItemAt(index).uri
+                        uploadImageToFirebaseStorage(albumId, imageUri)
+                        //imagelist.add(imageUri!!)
+                    }
+                } else {
+                    val imageUri = result.data?.data
+                    if (imageUri != null) {
+                        uploadImageToFirebaseStorage(albumId, imageUri)
+                    }
+                    //imagelist.add(imageUri!!)
+                }
+                //photoAdapter.notifyDataSetChanged()
+            }
+        }
+    }
+    private fun uploadImageToFirebaseStorage(albumId: String?, imageUri: Uri) {
+        if (albumId != null) {
+            val photoRef = storageReference.child("albums/$albumId/${imageUri.lastPathSegment}")
+            val uploadTask = photoRef.putFile(imageUri)
+            uploadTask.addOnSuccessListener {
+                photoRef.downloadUrl.addOnSuccessListener { uri ->
+                    imagelist.add(uri)
+                    photoAdapter.notifyDataSetChanged()
+                }.addOnFailureListener { exception ->
+                    Log.e("PhotoviewActivity", "Error getting download URL", exception)
+                }
+            }.addOnFailureListener { exception ->
+                Log.e("PhotoviewActivity", "Upload failed", exception)
+            }
+        }
+    }
+
+
+    private fun loadPhotosFromDatabase(albumId: String?) {
+        if (albumId != null) {
+            val storageReference = FirebaseStorage.getInstance().getReference("albums/$albumId")
+            storageReference.listAll()
+                .addOnSuccessListener { result ->
+                    result.items.forEach { photoReference ->
+                        photoReference.downloadUrl.addOnSuccessListener { uri ->
+                            imagelist.add(uri)
+                            photoAdapter.notifyDataSetChanged()
+                        }.addOnFailureListener { exception ->
+                            Log.e("PhotoviewActivity", "Error getting download URL", exception)
+                        }
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("PhotoviewActivity", "Error listing files", exception)
+                }
+        }
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 100) {
@@ -118,6 +159,7 @@ class PhotoviewActivity : AppCompatActivity() {
             }
         }
     }
-
-
+    companion object {
+        private const val PERMISSION_REQUEST_CODE = 100
+    }
 }
