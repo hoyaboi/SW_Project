@@ -14,6 +14,8 @@ import com.example.sw_project.models.com.example.sw_project.adapter.Album_Adapte
 import com.example.sw_project.models.com.example.sw_project.adapter.Album_list
 import com.example.sw_project.PhotoviewActivity
 import com.example.sw_project.databinding.FragmentAlbumBinding
+import com.google.firebase.database.*
+import com.example.sw_project.models.Album
 
 
 class AlbumFragment : Fragment() {
@@ -23,11 +25,10 @@ class AlbumFragment : Fragment() {
     private var _binding: FragmentAlbumBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var binding2:FragmentAlbumBinding
-    val Albumlist= arrayListOf<Album_list>()
+    val Albumlist= arrayListOf<Album>()
     val Albumadapter= Album_Adapter(Albumlist)
 
-    lateinit var Albumname:String
+    private val databaseReference = FirebaseDatabase.getInstance().getReference("albums")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,44 +48,52 @@ class AlbumFragment : Fragment() {
         //binding2=FragmentAlbumBinding.inflate(layoutInflater)
         val view=binding.root
 
-
+        setupRecyclerView()
+        setupAddAlbumButton()
+        loadAlbumsFromDatabase()
         //setContentView(view)
+        Log.d("AlbumFragment", "user email: $userEmail, room code: $roomCode")
+        return view
+    }
+    private fun setupRecyclerView() {
+        binding.recyclerview.layoutManager = GridLayoutManager(activity, 2)
+        binding.recyclerview.adapter = Albumadapter
 
-        //binding.recyclerview.layoutManager=LinearLayoutManager(this.activity,LinearLayoutManager.HORIZONTAL,false)
-        binding.recyclerview.layoutManager=GridLayoutManager(this.activity,2)
-        binding.recyclerview.adapter=Albumadapter
-//앨범 클릭시 앨범 index를 넘겨주며 사진 목록 화면으로 넘어감
-        Albumadapter.setItemClickListener(object: Album_Adapter.OnItemClickListener{
-          override fun onClick(v:View,position:Int){
-            val intent=Intent(activity, PhotoviewActivity::class.java)
-          intent.putExtra("albumID",position)
-        startActivity(intent)
-        }
+        Albumadapter.setItemClickListener(object : Album_Adapter.OnItemClickListener {
+            override fun onClick(v: View, position: Int) {
+                val intent = Intent(activity, PhotoviewActivity::class.java)
+                intent.putExtra("albumID", Albumlist[position].id)
+                startActivity(intent)
+            }
         })
-        //테스트
-        Albumlist.add(Album_list("강원도여행"))
-        Albumlist.add(Album_list("여름휴가"))
-        //val name: String=intent.getStringExtra("albumname").toString()
-        //val check=intent.getIntExtra("check",0)
-        val name=arguments?.getString("albumname").toString()
-        val check=arguments?.getInt("check")
-        //입력값 확인용....안나와ㅠㅠㅠㅠ
-        Log.d("AlbumFragment", "albumname: ${name}, check: $check")
-        if(check==1){
-            Albumlist.add(Album_list(name))
-        }
-        _binding?.addAlbum?.setOnClickListener {
+    }
+    private fun setupAddAlbumButton() {
+        binding.addAlbum.setOnClickListener {
             val intent = Intent(activity, AddAlbumActivity::class.java)
             startActivity(intent)
         }
-
-
-
-
-        Log.d("AlbumFragment", "user email: ${userEmail}, room Code: $roomCode")
-        return binding.root
-        //return View(requireActivity())
     }
+    private fun loadAlbumsFromDatabase() {
+        databaseReference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Albumlist.clear()
+                for (albumSnapshot in snapshot.children) {
+                    val album = albumSnapshot.getValue(Album::class.java)
+                    album?.let {
+                        val updatedAlbum = Album(it.name, it.coverImage, albumSnapshot.key ?: "")
+                        Albumlist.add(updatedAlbum)
+                        Log.d("AlbumFragment", "Data loaded successfully: $snapshot")
+                    }
+                }
+                Albumadapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.w("AlbumFragment", "Failed to read value.", error.toException())
+            }
+        })
+    }
+
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()

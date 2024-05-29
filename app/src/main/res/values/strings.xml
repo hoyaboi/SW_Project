@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">SW_Project</string>
+    <!-- fullphoto -->
+    <string name="fullscreen_image">Fullscreen Image</string>
+    <string name="photo">Photo</string>
+
+    <!-- album cover -->
+    <string name="album_cover">Album Cover</string>
 
     <!-- Sign In -->
     <string name="email">이메일</string>
