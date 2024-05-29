@@ -23,7 +23,7 @@
         android:layout_below="@+id/toolbar"
         android:orientation="vertical"
         android:gravity="center"
-        android:visibility="gone">  <!-- Initially hidden -->
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/selected_image"
