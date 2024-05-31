@@ -345,6 +345,25 @@
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"/>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightgrey2"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/exit_room_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingTop="13dp"
+                android:paddingBottom="13dp"
+                android:text="@string/exit_room"
+                android:textSize="17sp"
+                android:textColor="@color/red"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"/>
+
         </LinearLayout>
 
     </ScrollView>

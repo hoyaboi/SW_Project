@@ -82,11 +82,11 @@
         android:gravity="center_horizontal">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/change_button"
-            android:text="@string/check"
+            android:id="@+id/cancel_button"
+            android:text="@string/cancel"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:backgroundTint="@color/lightgrey"
             app:strokeColor="@color/grey"
             app:strokeWidth="1dp"
@@ -94,8 +94,8 @@
             android:textColor="@color/black"/>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/cancel_button"
-            android:text="@string/cancel"
+            android:id="@+id/change_button"
+            android:text="@string/check"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/lightgrey"

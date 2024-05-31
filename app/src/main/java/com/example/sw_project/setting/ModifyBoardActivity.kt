@@ -15,6 +15,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
@@ -55,6 +56,7 @@ class ModifyBoardActivity : AppCompatActivity() {
     private lateinit var changeImageButton: MaterialButton
     private lateinit var removeImageButton: MaterialButton
     private lateinit var modifyButton: MaterialButton
+    private lateinit var deleteButton: MaterialButton
     private lateinit var progressBar: ProgressBar
 
     private var content: String? = null
@@ -96,6 +98,7 @@ class ModifyBoardActivity : AppCompatActivity() {
         changeImageButton = findViewById(R.id.change_image_button)
         removeImageButton = findViewById(R.id.remove_image_button)
         modifyButton = findViewById(R.id.modify_button)
+        deleteButton = findViewById(R.id.delete_button)
         progressBar = findViewById(R.id.progressBar)
     }
 
@@ -151,10 +154,14 @@ class ModifyBoardActivity : AppCompatActivity() {
         modifyButton.setOnClickListener {
             val modifiedContent = contentEditText.text.toString().trim()
             if(modifiedContent.isNotEmpty()) {
-                modify(modifiedContent)
+                modifyBoard(modifiedContent)
             } else {
                 Toast.makeText(this, "내용을 입력하세요.", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        deleteButton.setOnClickListener {
+            deleteBoard()
         }
     }
 
@@ -167,7 +174,7 @@ class ModifyBoardActivity : AppCompatActivity() {
         }
     }
 
-    private fun modify(content: String) {
+    private fun modifyBoard(content: String) {
         progressBar.visibility = View.VISIBLE
         if(!imageUri.isNullOrEmpty()) {
             modifyStorage(content)
@@ -205,6 +212,24 @@ class ModifyBoardActivity : AppCompatActivity() {
 
                 override fun onLoadCleared(placeholder: Drawable?) {}
             })
+    }
+
+    private fun deleteBoard() {
+        AlertDialog.Builder(this)
+            .setTitle("게시물 삭제")
+            .setMessage("이 게시물을 정말 삭제하시겠습니까?")
+            .setPositiveButton("확인") { dialog, which ->
+                database.child("posts").child(postID!!).removeValue()
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "게시물이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "게시물 삭제에 실패했습니다. 다시 시도하세요.", Toast.LENGTH_SHORT).show()
+                    }
+            }
+            .setNegativeButton("취소", null)
+            .show()
     }
 
     private fun updateDatabase(content: String, uri: String) {

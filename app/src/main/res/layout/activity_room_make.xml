@@ -47,11 +47,11 @@
             android:gravity="center">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/checkbutton"
+                android:id="@+id/cancelbutton"
                 android:layout_width="110dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:text="@string/check"
+                android:text="@string/cancel"
                 android:textColor="@color/black"
                 android:backgroundTint="@color/lightgrey"
                 app:strokeWidth="1dp"
@@ -59,11 +59,11 @@
                 app:rippleColor="@color/grey"/>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/cancelbutton"
+                android:id="@+id/checkbutton"
                 android:layout_width="110dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="@string/cancel"
+                android:text="@string/check"
                 android:textColor="@color/black"
                 android:backgroundTint="@color/lightgrey"
                 app:strokeWidth="1dp"

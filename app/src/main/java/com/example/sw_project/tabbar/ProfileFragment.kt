@@ -8,9 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.example.sw_project.LoginActivity
 import com.example.sw_project.R
+import com.example.sw_project.StartActivity
 import com.example.sw_project.databinding.FragmentProfileBinding
 import com.example.sw_project.setting.BoardSettingActivity
 import com.example.sw_project.setting.PersonalSettingActivity
@@ -66,6 +69,7 @@ class ProfileFragment : Fragment() {
         scheduleNotifSetting()  // 일정 랄림 설정
         showRoomCode()          // 방 입장 코드 확인
         signout()               // 로그아웃
+        exitRoom()              // 방 나가기
 
         return binding.root
     }
@@ -159,6 +163,25 @@ class ProfileFragment : Fragment() {
             auth.signOut()
             val intent = Intent(requireContext(), LoginActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    private fun exitRoom() {
+        binding.exitRoomText.setOnClickListener {
+            AlertDialog.Builder(requireContext())
+                .setTitle("방 나가기")
+                .setMessage("방을 나가시겠습니까?\n작성한 게시물은 삭제되지 않습니다.")
+                .setPositiveButton("나가기") { dialog, which ->
+                    database.child("rooms").child(roomCode!!).child("participants").child(auth.uid!!).removeValue()
+                        .addOnSuccessListener {
+                            startActivity(Intent(requireContext(), StartActivity::class.java))
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(requireContext(), "다시 시도하세요.", Toast.LENGTH_SHORT).show()
+                        }
+                }
+                .setNegativeButton("취소", null)
+                .show()
         }
     }
 

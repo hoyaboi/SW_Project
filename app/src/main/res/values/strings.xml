@@ -62,14 +62,17 @@
     <string name="schedule_notif_set">일정 알림</string>
     <string name="schedule_notif_set_sub">일정이 있으면 한 시간 전에 알림이 울립니다.</string>
     <string name="signout">로그아웃</string>
+    <string name="exit_room">방 나가기</string>
     <string name="change_profile">프로필 변경</string>
     <string name="remove_profile">프리필 제거</string>
     <string name="change">변경하기</string>
     <string name="modify">수정하기</string>
+    <string name="delete">삭제하기</string>
     <string name="room_code">방 입장 코드</string>
     <string name="show_room_code">방 입장 코드 보기</string>
     <string name="show_room_code_sub">현재 참여중인 방의 입장 코드를 확인합니다.</string>
     <string name="copy_room_code">입장 코드 복사</string>
+    <string name="no_board_data">작성한 게시물이 없습니다.</string>
 
 
 </resources>

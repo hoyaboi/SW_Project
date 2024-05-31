@@ -107,7 +107,7 @@ class BoardFragment : Fragment() {
 
                     dataSnapshot.children.forEach { postSnapshot ->
                         val post = postSnapshot.getValue(Post::class.java)
-                        if (post != null) {
+                        if (post != null && post.roomCode == roomCode) {
                             val profileUri = async(Dispatchers.IO) { getProfileUri(post.uid) }
                             val userName = async(Dispatchers.IO) { getUserName(post.uid) }
 
@@ -162,11 +162,12 @@ class BoardFragment : Fragment() {
                             )
 
                             memberList.add(memberItem)
-
-                            activity?.runOnUiThread {
-                                memberAdapter.setMembers(memberList)
-                            }
                         }
+                    }
+
+                    memberList.sortBy { it.uName }
+                    activity?.runOnUiThread {
+                        memberAdapter.setMembers(memberList)
                     }
                 }
             }

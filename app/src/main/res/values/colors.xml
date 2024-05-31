@@ -6,6 +6,7 @@
     <color name="lightgrey2">#F3F3F3</color>
     <color name="grey">#DADADA</color>
     <color name="darkgrey">#B1B1B1</color>
+    <color name="red">#FF0000</color>
     <color name="transparent">#00000000</color>
 
 </resources>

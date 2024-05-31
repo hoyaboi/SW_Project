@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -31,6 +32,7 @@ import java.util.Locale
 class BoardSettingActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
+    private lateinit var noDataText: TextView
     private var roomCode: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +48,7 @@ class BoardSettingActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
 
+        noDataText = findViewById(R.id.no_data_text)
         loadBoard()
 
     }
@@ -85,6 +88,7 @@ class BoardSettingActivity : AppCompatActivity() {
                         }
                     }
                 }
+                noDataText.visibility = if (postsList.isEmpty()) View.VISIBLE else View.GONE
                 postsList.sortByDescending { it.date }
                 recyclerView.adapter?.notifyDataSetChanged()
             }
