@@ -12,52 +12,41 @@ import com.example.sw_project.tabbar.AlbumFragment
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.database.*
 import android.widget.Toast
+import com.example.sw_project.databinding.ActivityAddAlbumBinding
 
 class AddAlbumActivity : AppCompatActivity() {
-
-    private lateinit var makeButton: MaterialButton
-
+    private lateinit var binding: ActivityAddAlbumBinding
+    private lateinit var databaseReference: DatabaseReference
+    private var roomCode: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_add_album)
-        /*ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }*/
-        makeButton=findViewById<MaterialButton>(R.id.create_button)
-        makeButton.setOnClickListener {
+        binding = ActivityAddAlbumBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-            val editalbumname = findViewById<EditText>(R.id.Albumname)
-            val albumname = editalbumname.getText().toString()
-            Log.d("AddAlbum","albumname: ${albumname}")
-            //테스트용 입력값 fragment로 보내기
-            if (albumname.isNotEmpty()) {
-                saveAlbumToDatabase(albumname)
-                /*val intent = Intent(this, AlbumFragment::class.java)
-                intent.putExtra("albumname", albumname)
-                intent.putExtra("check", 1)
-                finish()*/
-                //val bundle=Bundle()
-                //bundle.putString("albumname",albumname)
-                //bundle.putInt("check",1)
-                //finish()
-            }
-            else {
+        roomCode = intent.getStringExtra("roomID")
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("albums")
+
+        binding.createButton.setOnClickListener {
+            val albumName = binding.Albumname.text.toString().trim()
+
+            if (albumName.isNotEmpty()) {
+                saveAlbumToDatabase(albumName)
+            } else {
                 Toast.makeText(this, "앨범 이름을 입력해주세요.", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
     private fun saveAlbumToDatabase(albumName: String) {
-        val databaseReference = FirebaseDatabase.getInstance().getReference("albums")
         val albumId = databaseReference.push().key ?: return
 
         val albumData = mapOf(
             "id" to albumId,
             "name" to albumName,
-            "coverImageUrl" to "" // 추후 앨범 커버 이미지를 추가할 수 있습니다.
+            //"coverImageUrl" to "", // 추후 앨범 커버 이미지를 추가할 수 있습니다.
+            "roomCode" to roomCode // roomCode를 추가하여 특정 방에 해당하는 앨범을 저장
         )
 
         databaseReference.child(albumId).setValue(albumData)

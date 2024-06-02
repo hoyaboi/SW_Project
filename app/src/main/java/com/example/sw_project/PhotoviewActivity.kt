@@ -30,6 +30,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.google.firebase.database.*
 
 
 class PhotoviewActivity : AppCompatActivity() {
@@ -76,8 +77,8 @@ class PhotoviewActivity : AppCompatActivity() {
         getResult.launch(intent)
     }
     private fun setupPermissions() {
-        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 100)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE)
         }
     }
 
@@ -95,21 +96,20 @@ class PhotoviewActivity : AppCompatActivity() {
         getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 val albumId = intent.getStringExtra("albumID")
-                if (result.data?.clipData != null) {
-                    val count = result.data?.clipData?.itemCount ?: 0
-                    for (index in 0 until count) {
-                        val imageUri = result.data?.clipData!!.getItemAt(index).uri
-                        uploadImageToFirebaseStorage(albumId, imageUri)
-                        //imagelist.add(imageUri!!)
+                if (albumId != null) {
+                    if (result.data?.clipData != null) {
+                        val count = result.data?.clipData!!.itemCount
+                        for (index in 0 until count) {
+                            val imageUri = result.data?.clipData!!.getItemAt(index).uri
+                            uploadImageToFirebaseStorage(albumId, imageUri)
+                        }
+                    } else {
+                        val imageUri = result.data?.data
+                        if (imageUri != null) {
+                            uploadImageToFirebaseStorage(albumId, imageUri)
+                        }
                     }
-                } else {
-                    val imageUri = result.data?.data
-                    if (imageUri != null) {
-                        uploadImageToFirebaseStorage(albumId, imageUri)
-                    }
-                    //imagelist.add(imageUri!!)
                 }
-                //photoAdapter.notifyDataSetChanged()
             }
         }
     }
@@ -119,6 +119,7 @@ class PhotoviewActivity : AppCompatActivity() {
             val uploadTask = photoRef.putFile(imageUri)
             uploadTask.addOnSuccessListener {
                 photoRef.downloadUrl.addOnSuccessListener { uri ->
+                    Log.d("PhotoviewActivity", "Image uploaded successfully: $uri")
                     imagelist.add(uri)
                     photoAdapter.notifyDataSetChanged()
                 }.addOnFailureListener { exception ->
@@ -136,6 +137,13 @@ class PhotoviewActivity : AppCompatActivity() {
             val storageReference = FirebaseStorage.getInstance().getReference("albums/$albumId")
             storageReference.listAll()
                 .addOnSuccessListener { result ->
+                    if (result.items.isNotEmpty()) {
+                        val coverImageRef = result.items[0]
+                        coverImageRef.downloadUrl.addOnSuccessListener { uri ->
+                            val albumReference = FirebaseDatabase.getInstance().getReference("albums").child(albumId)
+                            albumReference.child("coverImage").setValue(uri.toString())
+                        }
+                    }
                     result.items.forEach { photoReference ->
                         photoReference.downloadUrl.addOnSuccessListener { uri ->
                             imagelist.add(uri)
@@ -151,10 +159,13 @@ class PhotoviewActivity : AppCompatActivity() {
         }
     }
 
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 100) {
-            if (grantResults.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openGallery()
+            } else {
                 Toast.makeText(this, "권한이 거부되었습니다. 이미지를 업로드하려면 저장소 권한을 허용해야 합니다.", Toast.LENGTH_LONG).show()
             }
         }

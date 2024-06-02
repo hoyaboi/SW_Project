@@ -31,5 +31,6 @@ data class Member(
 data class Album(
     val id: String = "",
     val name: String = "",
-    val coverImage: String = ""
+    val coverImage: String = "",
+    val roomCode: String = ""
 )
