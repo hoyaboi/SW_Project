@@ -36,6 +36,7 @@ class AlbumFragment : Fragment() {
             userEmail = it.getString("userEmail")
             roomCode = it.getString("roomID")
         }
+
     }
 
     override fun onCreateView(
@@ -45,13 +46,11 @@ class AlbumFragment : Fragment() {
         _binding = FragmentAlbumBinding.inflate(inflater, container, false)
         // 여기서 userEmail과 roomID를 사용하여 UI 업데이트
         // user email과 room id 로깅
-        //binding2=FragmentAlbumBinding.inflate(layoutInflater)
         val view=binding.root
 
         setupRecyclerView()
         setupAddAlbumButton()
         loadAlbumsFromDatabase()
-        //setContentView(view)
         Log.d("AlbumFragment", "user email: $userEmail, room code: $roomCode")
         return view
     }
@@ -70,28 +69,31 @@ class AlbumFragment : Fragment() {
     private fun setupAddAlbumButton() {
         binding.addAlbum.setOnClickListener {
             val intent = Intent(activity, AddAlbumActivity::class.java)
+            intent.putExtra("roomID", roomCode)  // 방 코드 전달
             startActivity(intent)
         }
     }
     private fun loadAlbumsFromDatabase() {
-        databaseReference.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                Albumlist.clear()
-                for (albumSnapshot in snapshot.children) {
-                    val album = albumSnapshot.getValue(Album::class.java)
-                    album?.let {
-                        val updatedAlbum = Album(it.name, it.coverImage, albumSnapshot.key ?: "")
-                        Albumlist.add(updatedAlbum)
-                        Log.d("AlbumFragment", "Data loaded successfully: $snapshot")
+        roomCode?.let { code ->
+            val query = databaseReference.orderByChild("roomCode").equalTo(code)
+            query.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    Albumlist.clear()
+                    for (albumSnapshot in snapshot.children) {
+                        val album = albumSnapshot.getValue(Album::class.java)
+                        album?.let {
+                            Albumlist.add(it)
+                        }
                     }
+                    Albumadapter.notifyDataSetChanged()
+                    Log.d("AlbumFragment", "Data loaded successfully: $snapshot")
                 }
-                Albumadapter.notifyDataSetChanged()
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                Log.w("AlbumFragment", "Failed to read value.", error.toException())
-            }
-        })
+                override fun onCancelled(error: DatabaseError) {
+                    Log.w("AlbumFragment", "Failed to read value.", error.toException())
+                }
+            })
+        }
     }
 
     override fun onDestroyView() {

@@ -22,6 +22,7 @@ import com.example.sw_project.R
 import com.example.sw_project.databinding.FragmentScheduleBinding
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import com.google.firebase.database.*
 
 
 class ScheduleFragment : Fragment() {
@@ -29,10 +30,9 @@ class ScheduleFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
-        // 2. Context를 액티비티로 형변환해서 할당
         mainActivity = context as MainActivity
     }
+
     private var userEmail: String? = null
     private var roomCode: String? = null
 
@@ -40,10 +40,10 @@ class ScheduleFragment : Fragment() {
     lateinit var str: String
     lateinit var calendarView: CalendarView
     lateinit var updateBtn: Button
-    lateinit var deleteBtn:Button
+    lateinit var deleteBtn: Button
     lateinit var saveBtn: Button
     lateinit var diaryTextView: TextView
-    lateinit var diaryContent:TextView
+    lateinit var diaryContent: TextView
     lateinit var title: TextView
     lateinit var contextEditText: EditText
 
@@ -63,134 +63,126 @@ class ScheduleFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentScheduleBinding.inflate(inflater, container, false)
-        // 여기서 userEmail과 roomCode를 사용하여 UI 업데이트
-        // user email과 room id 로깅
+
         Log.d("ScheduleFragment", "user email: ${userEmail}, room ID: $roomCode")
 
-        val view2=inflater.inflate(R.layout.fragment_schedule,container,false)
+        calendarView = binding.calendarView
+        diaryTextView = binding.diaryTextView
+        saveBtn = binding.saveBtn
+        deleteBtn = binding.deleteBtn
+        updateBtn = binding.updateBtn
+        diaryContent = binding.diaryContent
+        title = binding.title
+        contextEditText = binding.contextEditText
 
-        calendarView=view2.findViewById(R.id.calendarView)
-        diaryTextView=view2.findViewById(R.id.diaryTextView)
-        saveBtn=view2.findViewById(R.id.saveBtn)
-        deleteBtn=view2.findViewById(R.id.deleteBtn)
-        updateBtn=view2.findViewById(R.id.updateBtn)
-        diaryContent=view2.findViewById(R.id.diaryContent)
-        title=view2.findViewById(R.id.title)
-        contextEditText=view2.findViewById(R.id.contextEditText)
-
-        //title.text="캘린더"
-
-        _binding?.calendarView?.setOnDateChangeListener{view, year,month,dayOfMonth->
+        calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
             Log.d("ScheduleFragment", "날짜 클릭")
-            binding.diaryTextView.visibility=View.VISIBLE
-            binding.saveBtn.visibility=View.VISIBLE
-            binding.contextEditText.visibility=View.VISIBLE
-            binding.diaryContent.visibility=View.INVISIBLE
-            binding.updateBtn.visibility=View.INVISIBLE
-            binding.deleteBtn.visibility=View.INVISIBLE
-            binding.diaryTextView.text=String.format("%d / %d / %d",year, month+1,dayOfMonth)
-            Log.d("ScheduleFragment", "$year     $month    $dayOfMonth")
-            binding.contextEditText.setText("")
-            //(context as FragmentActivity).supportFragmentManager.beginTransaction().detach(this).commit()
-            //(context as FragmentActivity).supportFragmentManager.beginTransaction().attach(this).commit()
-            checkDay(year,month,dayOfMonth)
+            diaryTextView.visibility = View.VISIBLE
+            saveBtn.visibility = View.VISIBLE
+            contextEditText.visibility = View.VISIBLE
+            diaryContent.visibility = View.INVISIBLE
+            updateBtn.visibility = View.INVISIBLE
+            deleteBtn.visibility = View.INVISIBLE
+            diaryTextView.text = String.format("%d / %d / %d", year, month + 1, dayOfMonth)
+            Log.d("ScheduleFragment", "$year $month $dayOfMonth")
+            contextEditText.setText("")
+            checkDay(year, month, dayOfMonth)
         }
 
-        _binding?.saveBtn?.setOnClickListener{
+        saveBtn.setOnClickListener {
             Log.d("ScheduleFragment", "저장버튼 클릭")
             saveDiary(fname)
-            binding.contextEditText.visibility=View.INVISIBLE
-            binding.saveBtn.visibility = View.INVISIBLE
-            binding.updateBtn.visibility = View.VISIBLE
-            binding.deleteBtn.visibility = View.VISIBLE
-            str = binding.contextEditText.text.toString()
-            Log.d("ScheduleFragment", "contents: ${str}")
-            binding.diaryContent.text = str
-            binding.diaryContent.visibility = View.VISIBLE
+            contextEditText.visibility = View.INVISIBLE
+            saveBtn.visibility = View.INVISIBLE
+            updateBtn.visibility = View.VISIBLE
+            deleteBtn.visibility = View.VISIBLE
+            str = contextEditText.text.toString()
+            Log.d("ScheduleFragment", "contents: $str")
+            diaryContent.text = str
+            diaryContent.visibility = View.VISIBLE
         }
 
         return binding.root
     }
 
-    fun checkDay(cYear:Int,cMonth:Int,cDay:Int){
-        //저장할 파일 이름 설정
-        fname=""+cYear+"-"+(cMonth+1)+""+"-"+cDay+".txt"
+    fun checkDay(cYear: Int, cMonth: Int, cDay: Int) {
+        fname = "" + cYear + "-" + (cMonth + 1) + "-" + cDay
 
-        var fileInputStream: FileInputStream
-        try{
+        val database = FirebaseDatabase.getInstance().reference
+            .child("rooms").child(roomCode.orEmpty())
+            .child("schedules").child(fname)
 
-            val filePath = mainActivity.getExternalFilesDir(null).toString()
-            //fileInputStream=mainActivity.openFileInput("${filePath}+/+${fname}")
-            fileInputStream=mainActivity.openFileInput(fname)
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    str = snapshot.getValue(String::class.java).orEmpty()
+                    contextEditText.visibility = View.INVISIBLE
+                    diaryContent.visibility = View.VISIBLE
+                    diaryContent.text = str
+                    saveBtn.visibility = View.INVISIBLE
+                    updateBtn.visibility = View.VISIBLE
+                    deleteBtn.visibility = View.VISIBLE
 
-            val fileData=ByteArray(fileInputStream.available())
-            fileInputStream.read(fileData)
-            fileInputStream.close()
-            str=String(fileData)
-            binding.contextEditText.visibility=View.INVISIBLE
-            binding.diaryContent.visibility=View.VISIBLE
-            binding.diaryContent.text=str
-            binding.saveBtn.visibility=View.INVISIBLE
-            binding.updateBtn.visibility=View.VISIBLE
-            binding.deleteBtn.visibility=View.VISIBLE
-            _binding?.updateBtn?.setOnClickListener{
-                binding.contextEditText.visibility=View.VISIBLE
-                binding.diaryContent.visibility=View.INVISIBLE
-                binding.contextEditText.setText(str)
-                binding.saveBtn.visibility=View.VISIBLE
-                binding.updateBtn.visibility = View.INVISIBLE
-                binding.deleteBtn.visibility = View.INVISIBLE
-                binding.diaryContent.text = binding.contextEditText.text
+                    updateBtn.setOnClickListener {
+                        contextEditText.visibility = View.VISIBLE
+                        diaryContent.visibility = View.INVISIBLE
+                        contextEditText.setText(str)
+                        saveBtn.visibility = View.VISIBLE
+                        updateBtn.visibility = View.INVISIBLE
+                        deleteBtn.visibility = View.INVISIBLE
+                        diaryContent.text = contextEditText.text
+                    }
+
+                    deleteBtn.setOnClickListener {
+                        diaryContent.visibility = View.INVISIBLE
+                        updateBtn.visibility = View.INVISIBLE
+                        deleteBtn.visibility = View.INVISIBLE
+                        contextEditText.setText("")
+                        contextEditText.visibility = View.VISIBLE
+                        saveBtn.visibility = View.VISIBLE
+                        removeDiary(fname)
+                    }
+                } else {
+                    contextEditText.visibility = View.VISIBLE
+                    diaryContent.visibility = View.INVISIBLE
+                    saveBtn.visibility = View.VISIBLE
+                    updateBtn.visibility = View.INVISIBLE
+                    deleteBtn.visibility = View.INVISIBLE
+                }
             }
-            _binding?.deleteBtn?.setOnClickListener {
-                binding.diaryContent.visibility = View.INVISIBLE
-                binding.updateBtn.visibility = View.INVISIBLE
-                binding.deleteBtn.visibility = View.INVISIBLE
-                binding.contextEditText.setText("")
-                binding.contextEditText.visibility = View.VISIBLE
-                binding.saveBtn.visibility = View.VISIBLE
-                removeDiary(fname)
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("ScheduleFragment", "Database error: ${error.message}")
             }
-            if (diaryContent.text == null) {
-                binding.diaryContent.visibility = View.INVISIBLE
-                binding.updateBtn.visibility = View.INVISIBLE
-                binding.deleteBtn.visibility = View.INVISIBLE
-                binding.diaryTextView.visibility = View.VISIBLE
-                binding.saveBtn.visibility = View.VISIBLE
-                binding.contextEditText.visibility = View.VISIBLE
-            }
-        }
-        catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-    @SuppressLint("WrongConstant")
-    fun removeDiary(readDay: String?){
-        var fileOutputStream: FileOutputStream
-        try{
-            fileOutputStream=mainActivity.openFileOutput(readDay,MODE_NO_LOCALIZED_COLLATORS)
-            val content=""
-            fileOutputStream.write(content.toByteArray())
-            fileOutputStream.close()
-        }
-        catch(e:java.lang.Exception){
-            e.printStackTrace()
-        }
+        })
     }
 
-    @SuppressLint("WrongConstant")
-    fun saveDiary(readDay: String?) {
-        var fileOutputStream: FileOutputStream
-        try {
-            fileOutputStream = mainActivity.openFileOutput(readDay, MODE_NO_LOCALIZED_COLLATORS)
-            val content = binding.contextEditText.text.toString()
-            fileOutputStream.write(content.toByteArray())
-            fileOutputStream.close()
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
+    fun removeDiary(readDay: String) {
+        val database = FirebaseDatabase.getInstance().reference
+            .child("rooms").child(roomCode.orEmpty())
+            .child("schedules").child(readDay)
+        database.removeValue().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Log.d("ScheduleFragment", "Diary removed successfully")
+            } else {
+                Log.e("ScheduleFragment", "Failed to remove diary")
+            }
         }
     }
 
+    fun saveDiary(readDay: String) {
+        val database = FirebaseDatabase.getInstance().reference
+            .child("rooms").child(roomCode.orEmpty())
+            .child("schedules").child(readDay)
+        val content = contextEditText.text.toString()
+        database.setValue(content).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Log.d("ScheduleFragment", "Diary saved successfully")
+            } else {
+                Log.e("ScheduleFragment", "Failed to save diary")
+            }
+        }
+    }
 
     override fun onDestroyView() {
         _binding = null
@@ -198,8 +190,6 @@ class ScheduleFragment : Fragment() {
     }
 
     companion object {
-
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(userEmail: String?, roomCode: String?) =
             ScheduleFragment().apply {
