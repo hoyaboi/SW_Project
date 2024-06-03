@@ -3,6 +3,7 @@ package com.example.sw_project
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,7 @@ import com.example.sw_project.tabbar.AlbumFragment
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.database.*
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.example.sw_project.databinding.ActivityAddAlbumBinding
 
 class AddAlbumActivity : AppCompatActivity() {
@@ -23,6 +25,10 @@ class AddAlbumActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddAlbumBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // 상태표시줄 색상 변경
+        window.statusBarColor = ContextCompat.getColor(this, R.color.lightgrey)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         roomCode = intent.getStringExtra("roomID")
 

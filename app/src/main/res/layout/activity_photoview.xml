@@ -34,7 +34,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
         android:src="@drawable/add"
         app:backgroundTint="@android:color/white"
         app:elevation="6dp"
@@ -42,7 +43,6 @@
         app:layout_constraintEnd_toEndOf="@+id/recyclerview"
         app:rippleColor="@color/grey"
         app:shapeAppearance="@style/Widget.Material3.CircularProgressIndicator" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

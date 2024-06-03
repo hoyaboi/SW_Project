@@ -46,6 +46,10 @@ class PhotoviewActivity : AppCompatActivity() {
         binding = ActivityPhotoviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // 상태표시줄 색상 변경
+        window.statusBarColor = ContextCompat.getColor(this, R.color.lightgrey)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
         val albumId = intent.getStringExtra("albumID")
         if (albumId == null) {
             Toast.makeText(this, "앨범 ID를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
